@@ -58,10 +58,10 @@ class _MenuState extends State<Menu> {
           //centralizar o campo de pesquisa
           flexibleSpace: Container(
             width: double.infinity,
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
             child: Container(
               width: 300,
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              padding: EdgeInsets.symmetric(vertical: 5),
               child: buscar(),
             ),
           ),
@@ -123,36 +123,25 @@ class _MenuState extends State<Menu> {
 //retorna a barra de pesquisas no app bar
 Widget buscar() {
   return Container(
-    height: 40,
-    padding: EdgeInsets.only(
-      left: 20,
-    ),
+    padding: EdgeInsets.only(left:10),
     decoration: BoxDecoration(
-      color: Color.fromRGBO(216, 216, 216, 0.698),
-      borderRadius: BorderRadius.all(
-        Radius.circular(128),
-      ),
-    ),
+        color: Color.fromRGBO(216, 216, 216, 0.698),
+        borderRadius: BorderRadius.circular(60)),
     child: Row(
       children: <Widget>[
         Icon(Icons.search),
         Container(
-          width: 200,
-          padding: EdgeInsets.only(left: 10),
-          child: TextFormField(
+          height: 45,
+          width: 250,
+          child: TextField(
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
-              border: InputBorder.none,
-              labelText: "Buscar...",
+              labelText: 'Buscar... ',
               labelStyle: TextStyle(
-                color:  Color(0xFF4C8D26),
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
+                fontSize: 15,
+                color: Color(0xFF4C8D26),
               ),
-            ),
-            style: TextStyle(
-              fontSize: 0,
-              color:  Color(0xFF4C8D26),
+              border: InputBorder.none,
             ),
           ),
         ),

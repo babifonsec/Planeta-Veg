@@ -10,8 +10,8 @@ class CategoriaItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 58,
+      height: 58,
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -25,10 +25,14 @@ class CategoriaItem extends StatelessWidget {
           ),
         ],
         borderRadius: BorderRadius.all(
-          Radius.circular(64),
+          Radius.circular(200),
         ),
       ),
-      child: Image.asset(image),
+      child: Expanded(
+        child: Image.asset(
+          image,
+        ),
+      ),
     );
   }
 }

@@ -27,13 +27,9 @@ class Home extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(bottom: 10),
                 child: Container(
-                  height: 70,
+                  height: 78,
                   child: categoriaList(),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 10, left: 7, right: 7),
-                child: ordenar(),
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
@@ -52,12 +48,18 @@ class Home extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                child: Text("Estabelecimentos",
-                style: TextStyle(
+                child: Text(
+                  "Estabelecimentos",
+                  style: TextStyle(
                     fontSize: 20,
                     color: Color(0xFF4C8D26),
                     fontWeight: FontWeight.bold,
-                  ),),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10, left: 7, right: 7),
+                child: ordenar(),
               ),
             ],
           ),
@@ -71,50 +73,39 @@ Widget categoriaList() {
   return ListView(
     scrollDirection: Axis.horizontal,
     children: [
-      CategoriaItem(image: "restaurant.png"),
-      CategoriaItem(image: "pizza-slice.png"),
-      CategoriaItem(image: "ice-cream.png"),
-      CategoriaItem(
-        image: "sushi.png",
-      ),
-      CategoriaItem(image: "wine-bottle.png"),
-      CategoriaItem(image: "padaria.png")
+      CategoriaItem(image: "assets/restaurant.png"),
+      CategoriaItem(image: "assets/pizza-slice.png"),
+      CategoriaItem(image: "assets/ice-cream.png"),
+      CategoriaItem(image: "assets/sushi.png"),
+      CategoriaItem(image: "assets/wine-bottle.png"),
+      CategoriaItem(image: "assets/padaria.png"),
+     // CategoriaItem(image: "assets/bolo.png"),
     ],
   );
 }
 
 Widget ordenar() {
   return Container(
-    height: 40,
-    padding: EdgeInsets.only(
-      left: 20,
-    ),
+    padding: EdgeInsets.only(left: 10),
     decoration: BoxDecoration(
-      color: Color.fromRGBO(216, 216, 216, 0.698),
-      borderRadius: BorderRadius.all(
-        Radius.circular(128),
-      ),
-    ),
+        color: Color.fromRGBO(216, 216, 216, 0.698),
+        borderRadius: BorderRadius.circular(60)),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(Icons.format_indent_increase_rounded),
+        Icon(Icons.search),
         Container(
-          width: 200,
-          padding: EdgeInsets.only(left: 10),
-          child: TextFormField(
+          height: 45,
+          width: 250,
+          child: TextField(
             keyboardType: TextInputType.text,
             decoration: InputDecoration(
-              border: InputBorder.none,
-              labelText: "Ordenar",
+              labelText: 'Ordenar ',
               labelStyle: TextStyle(
+                fontSize: 15,
                 color: Color(0xFF4C8D26),
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
               ),
-            ),
-            style: TextStyle(
-              fontSize: 0,
-              color: Color(0xFF4C8D26),
+              border: InputBorder.none,
             ),
           ),
         ),
@@ -128,104 +119,23 @@ Widget carousel() {
     child: Container(
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 100,
+          height:150,
           enableInfiniteScroll: true,
           enlargeCenterPage: true,
           autoPlay: true,
         ),
         items: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                child: Image.asset(
-                  "assets/salada-grao.jpg",
-                  height: 100,
-                ),
-              ),
-              Container(
-                height: 100,
-                width: 170,
-                color: Color(0xFF672F67).withOpacity(0.9),
-                child: Column(
-                  children: [
-                    Text(
-                      "Salada de Grão de Bico",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "10% de desconto!",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF4C8D26),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Text(
-                      "Uma porção por apenas 15,00 reais.",
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white,
-                        //  fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          Container(
+            child: Image.asset(
+              "assets/promo-sushi.png",
+             
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                child: Image.asset(
-                  "assets/hamburguer.jpg",
-                ),
-              ),
-              Container(
-                height: 100,
-                width: 170,
-                color: Color(0xFF672F67).withOpacity(0.9),
-                child: Column(
-                  children: [
-                    Text(
-                      "Hambúrguer Vegano",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      "25% de desconto!",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFF4C8D26),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Text(
-                      "2 hambúrgueres por 25,00 reais.",
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white,
-                        //  fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+          Container(
+            child: Image.asset(
+              "assets/promo-wrap.png",
+           
+            ),
           ),
         ],
       ),

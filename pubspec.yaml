@@ -31,11 +31,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  get: ^4.3.8
+  firebase_core: ^1.7.0
+  cloud_firestore: ^2.5.3
+  geoflutterfire: ^3.0.1
+  geolocator: ^7.7.0
+  google_maps_flutter: ^2.2.5
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  
 
 dev_dependencies:
   flutter_test:
@@ -69,8 +76,9 @@ flutter:
     - assets/wine-bottle.png
     - assets/pizza-slice.png
     - assets/padaria.png
-    - assets/salada-grao.jpg
-    - assets/hamburguer.jpg
+    - assets/promo-sushi.png
+    - assets/promo-wrap.png
+    - assets/bolo.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see

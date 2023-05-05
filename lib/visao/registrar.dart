@@ -20,14 +20,14 @@ class Registrar extends StatelessWidget {
               Container(
                 child: Image.asset(
                   'assets/logo.png',
-                  width: 250,
+                 // width: 250,
                 ),
                 height: 250,
               ),
               //"CAIXINHA" BRANCA DO LOGIN
               Container(
                 width: 330,
-                height: 400,
+                height: 450,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   color: Colors.white.withOpacity(0.8),
