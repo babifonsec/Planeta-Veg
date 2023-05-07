@@ -1,9 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.planetaveg">
+     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+     <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="planetaveg"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name = "com.google.android.geo.API_KEY"
+            android:value = "AIzaSyDxRa6FA8hDdT--xnV2yrokUzPo8zO-9Sg"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -3,25 +3,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:planetaveg/visao/login.dart';
+import 'package:planetaveg/visao/menu.dart';
 
 class Splash extends StatefulWidget {
-  const Splash({super.key});
+
+  late int opcao;
+  Splash(this.opcao);
 
   @override
-  State<Splash> createState() => _SplashState();
+  State<Splash> createState() => _SplashState(opcao);
 }
 
 class _SplashState extends State<Splash> {
-
+  late int opcao;
+  _SplashState(this.opcao);
+ 
   @override
   void initState() {
     super.initState();
 
-    //espera 3 segundos do splash
-    Future.delayed(Duration(seconds: 2)).then((_) {
+
+     if(opcao==0){
+  //espera 3 segundos do splash
+      Future.delayed(Duration(seconds: 2)).then((_) {
       //muda para a proxima tela
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()));
-    });
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login(),),);
+    },);
+     }
+     else if(opcao ==1) {
+       Future.delayed(Duration(seconds: 2)).then((_) {
+      //muda para a proxima tela
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Menu(0),),);
+    },);
+     }
+   
   }
 
 

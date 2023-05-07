@@ -18,6 +18,9 @@ class _PesquisaState extends State<Pesquisa> {
     final controller = Get.put(PosicaoControle());
 
     return Container(
+      height: double.infinity,
+      width: double.infinity,
+
       child: GetBuilder<PosicaoControle>(
           init: controller,
           builder: (value) => GoogleMap(
@@ -25,7 +28,7 @@ class _PesquisaState extends State<Pesquisa> {
                 zoomControlsEnabled: true,
                 initialCameraPosition: CameraPosition(
                   target: controller.position,
-                  zoom: 13,
+                  zoom: 16,
                 ),
                 onMapCreated: controller.onMapCreated,
                 myLocationEnabled: true,

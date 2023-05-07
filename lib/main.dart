@@ -8,15 +8,15 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   
-  @override
-  Widget build(BuildContext context) {
+  @override 
+  Widget build(BuildContext context) {  
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Planeta Veg',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: Splash(),
+      home: Splash(0),
     );  
   }
 }

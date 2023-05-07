@@ -10,6 +10,7 @@ class PosicaoControle extends GetxController {
   late StreamSubscription<Position> posicaoStream;
   LatLng _position = LatLng(-20.462084, -45.434656);
   late GoogleMapController _mapsController;
+  final markers = Set<Marker>();
 
   static PosicaoControle get to => Get.find<PosicaoControle>();
 
@@ -18,7 +19,10 @@ get position => _position;
 
 onMapCreated(GoogleMapController gmc) async{
   _mapsController = gmc;
+  getPosicao();
+ 
 }
+
 
 watchPosition() async{
 posicaoStream = Geolocator.getPositionStream().listen((Position position){

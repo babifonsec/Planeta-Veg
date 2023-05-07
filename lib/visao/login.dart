@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:planetaveg/visao/menu.dart';
 import 'package:planetaveg/visao/registrar.dart';
+import 'package:planetaveg/visao/splash.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -116,7 +117,7 @@ class Login extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Menu(0),
+                                  builder: (context) => Splash(1),
                                 ),
                               );
                             },

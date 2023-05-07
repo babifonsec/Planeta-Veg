@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:planetaveg/visao/login.dart';
 import 'package:planetaveg/visao/menu.dart';
+import 'package:planetaveg/visao/splash.dart';
 
 class Registrar extends StatelessWidget {
   const Registrar({super.key});
@@ -141,7 +142,7 @@ class Registrar extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Menu(0),
+                                builder: (context) => Splash(1),
                               ),
                             );
                           },
