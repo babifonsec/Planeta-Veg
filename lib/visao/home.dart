@@ -19,7 +19,7 @@ class Home extends StatelessWidget {
                   "Categorias",
                   style: TextStyle(
                     fontSize: 20,
-                    color: Color(0xFF4C8D26),
+                    color: Color(0xFF7A8727),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -37,7 +37,7 @@ class Home extends StatelessWidget {
                   "Promoções",
                   style: TextStyle(
                     fontSize: 20,
-                    color: Color(0xFF4C8D26),
+                    color: Color(0xFF7A8727),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -52,7 +52,7 @@ class Home extends StatelessWidget {
                   "Estabelecimentos",
                   style: TextStyle(
                     fontSize: 20,
-                    color: Color(0xFF4C8D26),
+                    color: Color(0xFF7A8727),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -103,7 +103,7 @@ Widget ordenar() {
               labelText: 'Ordenar ',
               labelStyle: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF4C8D26),
+                color: Color(0xFF7A8727),
               ),
               border: InputBorder.none,
             ),

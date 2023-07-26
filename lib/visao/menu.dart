@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:planetaveg/visao/home.dart';
 import 'package:planetaveg/visao/perfil.dart';
@@ -75,7 +75,7 @@ class _MenuState extends State<Menu> {
           items: _navegationItens,
           unselectedItemColor: Color(0xFFF5F5F5),
           currentIndex: _selectedIndex,
-          selectedItemColor: Color(0xFF4C8D26),
+          selectedItemColor: Color(0xFF7A8727),
           onTap:
               _onItemTapped, //chama o métdodo onItemTapped ao clicar no botao do BTNNavigation
         ),
@@ -139,7 +139,7 @@ Widget buscar() {
               labelText: 'Buscar... ',
               labelStyle: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF4C8D26),
+                color: Color(0xFF7A8727),
               ),
               border: InputBorder.none,
             ),

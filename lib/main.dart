@@ -1,13 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:planetaveg/visao/splash.dart';
+import 'package:planetaveg/servico/auth_check.dart';
+import 'package:planetaveg/servico/auth_service.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=> AuthService()),
+      ],
+      child: MyApp(),),
+    );
+  
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override 
   Widget build(BuildContext context) {  
     return MaterialApp(
@@ -16,7 +29,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: Splash(0),
+      home: AuthCheck(),
     );  
   }
 }
+

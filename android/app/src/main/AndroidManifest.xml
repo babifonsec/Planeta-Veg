@@ -7,7 +7,10 @@
    <application
         android:label="planetaveg"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        >
         <meta-data android:name = "com.google.android.geo.API_KEY"
             android:value = "AIzaSyDxRa6FA8hDdT--xnV2yrokUzPo8zO-9Sg"/>
         <activity
