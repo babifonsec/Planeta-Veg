@@ -18,6 +18,7 @@ class _LoginState extends State<Login> {
   late String titulo;
   late String acaoBotao;
   late String textBotao;
+  bool loading = false;
 
   @override
   void initState() {
@@ -42,9 +43,15 @@ class _LoginState extends State<Login> {
   }
 
   login() async {
+    setState(() {
+      loading = true;
+    });
     try {
       await context.read<AuthService>().login(email.text, senha.text);
     } on AuthException catch (e) {
+      setState(() {
+        loading = false;
+      });
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message)));
     }
@@ -52,8 +59,14 @@ class _LoginState extends State<Login> {
 
   registrar() async {
     try {
+      setState(() {
+        loading = true;
+      });
       await context.read<AuthService>().registrar(email.text, senha.text);
     } on AuthException catch (e) {
+      setState(() {
+        loading = false;
+      });
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.message)));
     }
@@ -172,7 +185,7 @@ class _LoginState extends State<Login> {
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Color(0xFF7A8727)),
                               fixedSize: MaterialStateProperty.all<Size>(
-                                  Size(150, 50)),
+                                  Size(180, 50)),
                               shape: MaterialStateProperty.all<
                                   RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
@@ -184,19 +197,31 @@ class _LoginState extends State<Login> {
                               if (formKey.currentState!.validate()) {
                                 if (isLogin) {
                                   login();
-                                } else{
+                                } else {
                                   registrar();
                                 }
                               }
                             },
                             child: Row(
-                              children: [
-                                Icon(Icons.check),
-                                Text(
-                                  acaoBotao,
-                                  style: TextStyle(fontSize: 25),
-                                ),
-                              ],
+                              children: (loading)
+                                  ? [
+                                      Padding(
+                                        padding: EdgeInsets.all(16),
+                                        child: SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                              color: Color(0xFF7A8727)),
+                                        ),
+                                      )
+                                    ]
+                                  : [
+                                      Icon(Icons.check),
+                                      Text(
+                                        acaoBotao,
+                                        style: TextStyle(fontSize: 25),
+                                      ),
+                                    ],
                             ),
                           ),
                         ),

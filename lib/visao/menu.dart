@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:planetaveg/visao/home.dart';
-import 'package:planetaveg/visao/perfil.dart';
+import 'package:planetaveg/servico/auth_service.dart';
 import 'package:planetaveg/visao/pesquisa.dart';
+import 'package:provider/provider.dart';
 
 //indice de seleção da tela
 int _selectedIndex = 0;
@@ -11,22 +11,17 @@ int _selectedIndex = 0;
 List<Widget> _stOptions = <Widget>[
   Home(),
   Pesquisa(),
-  Perfil(),
 ];
 
 //lista de icons
 final List<BottomNavigationBarItem> _navegationItens = [
   BottomNavigationBarItem(
     icon: Icon(Icons.home),
-    label: 'Home',
+    label: 'Início',
   ),
   BottomNavigationBarItem(
     icon: Icon(Icons.search),
-    label: 'Explorar',
-  ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.account_circle_rounded),
-    label: 'Perfil',
+    label: 'Buscar',
   ),
 ];
 
@@ -83,18 +78,64 @@ class _MenuState extends State<Menu> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Center(
-            child: Text(
-              "Av. Rio Branco",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              ),
-            ),
-          ),
           backgroundColor: Color(0xFF672F67),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              SizedBox(
+                height: 160,
+                child: DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF672F67),
+                  ),
+                  child: Container(
+                    child: Text(
+                      'Bem-vindo user',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.person,
+                  color: Color(0xFF7A8727),
+                ),
+                title: Text('Dados do usuário'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.history,
+                  color: Color(0xFF7A8727),
+                ),
+                title: Text('Histórico de pedidos'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.settings,
+                  color: Color(0xFF7A8727),
+                ),
+                title: Text('Configurações'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.logout,
+                  color: Color(0xFF7A8727),
+                ),
+                title: Text('Sair'),
+                onTap: () => context.read<AuthService>().logout(),
+              ),
+            ],
+          ),
         ),
         //corpo da aplicação, aqui são setadas as telas
         body: _stOptions.elementAt(_selectedIndex),
@@ -104,7 +145,7 @@ class _MenuState extends State<Menu> {
           items: _navegationItens,
           unselectedItemColor: Color(0xFFF5F5F5),
           currentIndex: _selectedIndex,
-          selectedItemColor: Color(0xFF4C8D26),
+          selectedItemColor: Color(0xFF7A8727),
           onTap:
               _onItemTapped, //chama o métdodo onItemTapped ao clicar no botao do BTNNavigation
         ),
@@ -123,7 +164,7 @@ class _MenuState extends State<Menu> {
 //retorna a barra de pesquisas no app bar
 Widget buscar() {
   return Container(
-    padding: EdgeInsets.only(left:10),
+    padding: EdgeInsets.only(left: 10),
     decoration: BoxDecoration(
         color: Color.fromRGBO(216, 216, 216, 0.698),
         borderRadius: BorderRadius.circular(60)),
