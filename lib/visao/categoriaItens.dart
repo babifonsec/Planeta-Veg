@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-
+import 'package:planetaveg/visao/categoriaDetalhes.dart';
 
 class CategoriaItem extends StatelessWidget {
   final String image;
+  final String uid;
 
-  CategoriaItem({required this.image});
+  CategoriaItem({required this.image, required this.uid});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 58,
-      height: 58,
+      width: 60,
+      height: 60,
       margin: EdgeInsets.all(10),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -29,8 +30,16 @@ class CategoriaItem extends StatelessWidget {
         ),
       ),
       child: Expanded(
-        child: Image.asset(
-          image,
+        child: IconButton(
+          icon: Image.asset(
+            image,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CategoriaDetalhes(uid)),
+            );
+          },
         ),
       ),
     );

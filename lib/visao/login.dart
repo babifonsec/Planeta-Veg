@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
       isLogin = acao;
       if (isLogin) {
         titulo = "Bem vindo";
-        acaoBotao = "Login";
+        acaoBotao = "Entrar";
         textBotao = "Não tem uma conta? Cadastre-se!";
       } else {
         titulo = "Cadastre-se";
@@ -203,6 +203,7 @@ class _LoginState extends State<Login> {
                               }
                             },
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: (loading)
                                   ? [
                                       Padding(
@@ -211,15 +212,15 @@ class _LoginState extends State<Login> {
                                           width: 24,
                                           height: 24,
                                           child: CircularProgressIndicator(
-                                              color: Color(0xFF7A8727)),
+                                              color: Colors.white),
                                         ),
                                       )
                                     ]
                                   : [
-                                      Icon(Icons.check),
                                       Text(
                                         acaoBotao,
                                         style: TextStyle(fontSize: 25),
+                                        textAlign: TextAlign.center,
                                       ),
                                     ],
                             ),
@@ -228,7 +229,10 @@ class _LoginState extends State<Login> {
                         //REGISTRAR:
                         TextButton(
                           onPressed: () => setFormAction(!isLogin),
-                          child: Text(textBotao),
+                          child: Text(
+                            textBotao,
+                            style: TextStyle(color: Colors.black),
+                          ),
                         ),
                       ],
                     ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:planetaveg/visao/carrinho.dart';
+import 'package:planetaveg/visao/dadosUsuario.dart';
 import 'package:planetaveg/visao/home.dart';
 import 'package:planetaveg/servico/auth_service.dart';
 import 'package:planetaveg/visao/pesquisa.dart';
@@ -79,6 +81,19 @@ class _MenuState extends State<Menu> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Color(0xFF672F67),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Carrinho(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.shopping_cart),
+            ),
+          ],
         ),
         drawer: Drawer(
           child: ListView(
@@ -108,6 +123,19 @@ class _MenuState extends State<Menu> {
                   color: Color(0xFF7A8727),
                 ),
                 title: Text('Dados do usuário'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Usuario(auth: context.read<AuthService>())),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.house,
+                  color: Color(0xFF7A8727),
+                ),
+                title: Text('Endereços cadastrados'),
                 onTap: () {},
               ),
               ListTile(
@@ -124,6 +152,14 @@ class _MenuState extends State<Menu> {
                   color: Color(0xFF7A8727),
                 ),
                 title: Text('Configurações'),
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.store,
+                  color: Color(0xFF7A8727),
+                ),
+                title: Text('Cadastre sua loja'),
                 onTap: () {},
               ),
               ListTile(
