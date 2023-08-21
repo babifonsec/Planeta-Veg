@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:planetaveg/visao/enderecos.dart';
 import 'package:planetaveg/visao/carrinho.dart';
-import 'package:planetaveg/visao/dadosUsuario.dart';
+import 'package:planetaveg/visao/perfilUsuario.dart';
 import 'package:planetaveg/visao/home.dart';
 import 'package:planetaveg/servico/auth_service.dart';
 import 'package:planetaveg/visao/pesquisa.dart';
@@ -80,6 +81,9 @@ class _MenuState extends State<Menu> {
     } else {
       return Scaffold(
         appBar: AppBar(
+           iconTheme: IconThemeData(
+          color: Colors.white, 
+        ),
           backgroundColor: Color(0xFF672F67),
           actions: [
             IconButton(
@@ -91,11 +95,13 @@ class _MenuState extends State<Menu> {
                   ),
                 );
               },
-              icon: Icon(Icons.shopping_cart),
+              icon: Icon(Icons.shopping_cart,
+               color: Colors.white,),
             ),
           ],
         ),
         drawer: Drawer(
+          
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -107,7 +113,7 @@ class _MenuState extends State<Menu> {
                   ),
                   child: Container(
                     child: Text(
-                      'Bem-vindo user',
+                      '*logo*',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -136,7 +142,12 @@ class _MenuState extends State<Menu> {
                   color: Color(0xFF7A8727),
                 ),
                 title: Text('Endereços cadastrados'),
-                onTap: () {},
+                onTap: () {
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>  Enderecos(auth: context.read<AuthService>())),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(
@@ -153,15 +164,7 @@ class _MenuState extends State<Menu> {
                 ),
                 title: Text('Configurações'),
                 onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.store,
-                  color: Color(0xFF7A8727),
-                ),
-                title: Text('Cadastre sua loja'),
-                onTap: () {},
-              ),
+              ),  
               ListTile(
                 leading: Icon(
                   Icons.logout,
@@ -206,7 +209,8 @@ Widget buscar() {
         borderRadius: BorderRadius.circular(60)),
     child: Row(
       children: <Widget>[
-        Icon(Icons.search),
+        Icon(Icons.search,
+        color: Colors.white,),
         Container(
           height: 45,
           width: 250,

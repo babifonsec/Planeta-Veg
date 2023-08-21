@@ -45,8 +45,7 @@ class _ListaLojasState extends State<ListaLojas> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           StreamBuilder(
@@ -83,7 +82,7 @@ class _ListaLojasState extends State<ListaLojas> {
             },
           ),
         ],
-      ),
+      
     );
   }
 }

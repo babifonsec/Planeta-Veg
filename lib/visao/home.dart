@@ -8,8 +8,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Center(
           child: Container(
             height: MediaQuery.of(context).size.height,
@@ -31,7 +30,7 @@ class Home extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(bottom: 10),
                     child: Container(
-                      height: 78,
+                      height: 87,
                       child: categoriaList(),
                     ),
                   ),
@@ -71,7 +70,7 @@ class Home extends StatelessWidget {
             ),
           ),
         ),
-      ),
+    
     );
   }
 }
