@@ -38,23 +38,48 @@ class _CadEnderecoState extends State<CadEndereco> {
   String complemento = "Complemento";
   String cep = "CEP";
 
- StreamSubscription<QuerySnapshot>? enderecosInscricao;
+  Future<void> adicionarEndereco() async {
+    try {
+      Map<String, dynamic> novoEndereco = {
+        'rua': ruaController.text,
+        'numero': numeroController.text,
+        'bairro': bairroController.text,
+        'cidade': cidadeController.text,
+        'complemento': complementoController.text,
+        'cep': cepController.text,
+      };
 
-  salvarEndereco(Endereco endereco) async {
-    await db.collection('enderecos').doc(auth.usuario!.uid).set({
-      'numero': endereco.numero,
-      'rua': endereco.rua,
-      'bairro': endereco.bairro,
-      'cidade': endereco.cidade,
-      'complemento': endereco.complemento,
-      'cep': endereco.cep,
-    });
+      DocumentReference docRef =
+          db.collection('clientes').doc(auth.usuario!.uid);
 
-    DocumentSnapshot snapshot =
-        await db.collection('enderecos').doc(auth.usuario!.uid).get();
+      // Primeiro, obtenha os dados atuais do documento
+      DocumentSnapshot docSnapshot = await docRef.get();
+      if (docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+
+        // Verifique se o campo 'enderecos' existe no documento
+        if (data.containsKey('enderecos')) {
+          List<dynamic> enderecos = data['enderecos'];
+          // Adicione o novo endereço ao array de endereços
+          enderecos.add(novoEndereco);
+          // Atualize o documento com o novo array de endereços
+          await docRef.update({'enderecos': enderecos});
+        } else {
+          // Se o campo 'enderecos' não existir, crie-o com o novo endereço
+          await docRef.update({
+            'enderecos': [novoEndereco]
+          });
+        }
+      }
+    } catch (e) {
+      print('Erro ao adicionar endereço: $e');
+    }
   }
 
-  Future<void> loadEnderecoData() async {
+  StreamSubscription<QuerySnapshot>? enderecosInscricao;
+
+
+  /*Future<void> loadEnderecoData() async {
     try {
       User? currentUser = auth.usuario;
       String? userId = currentUser?.uid;
@@ -70,12 +95,12 @@ class _CadEnderecoState extends State<CadEndereco> {
     } catch (e) {
       print('Erro ao carregar dados do endereço: $e');
     }
-  }
+  }*/
 
-  @override
+ /* @override
   void initState() {
     super.initState();
- loadEnderecoData(); // Carrega os dados ao abrir a tela
+   // loadEnderecoData(); // Carrega os dados ao abrir a tela
 
     List<Endereco> items = [];
     enderecosInscricao?.cancel();
@@ -92,7 +117,7 @@ class _CadEnderecoState extends State<CadEndereco> {
         );
       },
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -199,14 +224,7 @@ class _CadEnderecoState extends State<CadEndereco> {
                     width: 160,
                     child: OutlinedButton(
                       onPressed: () {
-                        salvarEndereco(Endereco(
-                          ruaController.text,
-                          numeroController.text,
-                          bairroController.text,
-                          complementoController.text,
-                          cidadeController.text,
-                          cepController.text,
-                        ));
+                        adicionarEndereco();
                       },
                       child: Text(
                         'Salvar',

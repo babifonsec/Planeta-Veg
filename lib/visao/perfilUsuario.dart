@@ -75,15 +75,17 @@ class _UsuarioState extends State<Usuario> {
   }
 
   salvarCliente(Cliente cliente) async {
+    DocumentSnapshot snapshot = await db.collection('clientes').doc(auth.usuario!.uid).get();
+    Map<String, dynamic> dadosExistentes = snapshot.data() as Map<String, dynamic>;
+
     await db.collection('clientes').doc(auth.usuario!.uid).set({
       'nome': cliente.nome,
       'cpf': cliente.cpf,
       'telefone': cliente.telefone,
       'imageUrl': cliente.imageUrl,
+      'enderecos': dadosExistentes['enderecos'], //mantem o endereço 
     });
 
-    DocumentSnapshot snapshot =
-        await db.collection('clientes').doc(auth.usuario!.uid).get();
     if (snapshot.exists) {
       String nomeBD = snapshot.get('nome');
       String telefoneBD = snapshot.get('telefone');
