@@ -1,148 +1,73 @@
-import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/modelo/Endereco.dart';
+import 'package:planetaveg/controle/EnderecoController.dart';
 import 'package:planetaveg/servico/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
-class CadEndereco extends StatefulWidget with ChangeNotifier {
-  AuthService auth;
-  CadEndereco({required this.auth});
+class EnderecosCreate extends StatefulWidget {
+  final AuthService auth;
+  EnderecosCreate({required this.auth});
 
   @override
-  State<CadEndereco> createState() => _CadEnderecoState(auth: auth);
+  State<EnderecosCreate> createState() => _EnderecosCreateState(auth: auth);
 }
 
-class _CadEnderecoState extends State<CadEndereco> {
+class _EnderecosCreateState extends State<EnderecosCreate> {
+  AuthService auth;
+  _EnderecosCreateState({required this.auth});
+
+  FirebaseFirestore db = DBFirestore.get();
+  FirebaseStorage storage = FBStorage.get();
+  bool uploading = false;
+  User? user = FirebaseAuth.instance.currentUser;
   final key = GlobalKey<FormState>();
+  final ruaController = TextEditingController();
+  final numeroController = TextEditingController();
   final bairroController = TextEditingController();
-  final cepController = TextEditingController();
   final cidadeController = TextEditingController();
   final complementoController = TextEditingController();
-  final numeroController = TextEditingController();
-  final ruaController = TextEditingController();
-
-  FirebaseFirestore db = DBFirestore.get(); //recupera a instancia do firestore
-
-  late AuthService auth;
-  _CadEnderecoState({required this.auth});
-
-  //double total = 0;
-  List<Endereco> items = [];
-  String numero = "Número da Casa";
-  String rua = "Rua";
-  String bairro = "Bairro";
-  String cidade = "Cidade";
-  String complemento = "Complemento";
-  String cep = "CEP";
-
-  Future<void> adicionarEndereco() async {
-    try {
-      Map<String, dynamic> novoEndereco = {
-        'rua': ruaController.text,
-        'numero': numeroController.text,
-        'bairro': bairroController.text,
-        'cidade': cidadeController.text,
-        'complemento': complementoController.text,
-        'cep': cepController.text,
-      };
-
-      DocumentReference docRef =
-          db.collection('clientes').doc(auth.usuario!.uid);
-
-      // Primeiro, obtenha os dados atuais do documento
-      DocumentSnapshot docSnapshot = await docRef.get();
-      if (docSnapshot.exists) {
-        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
-
-        // Verifique se o campo 'enderecos' existe no documento
-        if (data.containsKey('enderecos')) {
-          List<dynamic> enderecos = data['enderecos'];
-          // Adicione o novo endereço ao array de endereços
-          enderecos.add(novoEndereco);
-          // Atualize o documento com o novo array de endereços
-          await docRef.update({'enderecos': enderecos});
-        } else {
-          // Se o campo 'enderecos' não existir, crie-o com o novo endereço
-          await docRef.update({
-            'enderecos': [novoEndereco]
-          });
-        }
-      }
-    } catch (e) {
-      print('Erro ao adicionar endereço: $e');
-    }
-  }
-
-  StreamSubscription<QuerySnapshot>? enderecosInscricao;
-
-
-  /*Future<void> loadEnderecoData() async {
-    try {
-      User? currentUser = auth.usuario;
-      String? userId = currentUser?.uid;
-
-      if (userId != null) {
-        DocumentSnapshot snapshot =
-            await db.collection('enderecos').doc(userId).get();
-        if (snapshot.exists) {
-          Map<String, dynamic> enderecoData =
-              snapshot.data() as Map<String, dynamic>;
-        }
-      }
-    } catch (e) {
-      print('Erro ao carregar dados do endereço: $e');
-    }
-  }*/
-
- /* @override
-  void initState() {
-    super.initState();
-   // loadEnderecoData(); // Carrega os dados ao abrir a tela
-
-    List<Endereco> items = [];
-    enderecosInscricao?.cancel();
-    enderecosInscricao = db.collection("enderecos").snapshots().listen(
-      (snapshot) {
-        final List<Endereco> enderecos = snapshot.docs
-            .map((documentSnapshot) => Endereco.fromMap(
-                  documentSnapshot.data(),
-                  documentSnapshot.id,
-                ))
-            .toList();
-        setState(
-          () => this.items = enderecos,
-        );
-      },
-    );
-  }*/
+  final cepController = TextEditingController();
+  EnderecoController endereco = EnderecoController();
+ 
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color(0xFF672F67),
-        title: Text(
-          'Novo Endereço',
-          style: TextStyle(color: Colors.white),
-        ),
       ),
       body: SingleChildScrollView(
         child: Form(
+          key: key,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  'Cadastre seu Endereço:',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Color(0xFF7A8727),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              
               Padding(
                 padding: EdgeInsets.all(10),
                 child: Container(
                   child: TextFormField(
+                    keyboardType: TextInputType.text,
                     controller: ruaController,
                     decoration: InputDecoration(
                       labelText: 'Rua',
-                      hintText: rua,
                       suffixIcon: Icon(Icons.edit),
                     ),
                   ),
@@ -152,11 +77,10 @@ class _CadEnderecoState extends State<CadEndereco> {
                 padding: EdgeInsets.all(10),
                 child: Container(
                   child: TextFormField(
-                    controller: numeroController,
                     keyboardType: TextInputType.number,
+                    controller: numeroController,
                     decoration: InputDecoration(
-                      labelText: 'Numero',
-                      hintText: numero,
+                      labelText: 'Número',
                       suffixIcon: Icon(Icons.edit),
                     ),
                   ),
@@ -170,21 +94,6 @@ class _CadEnderecoState extends State<CadEndereco> {
                     controller: bairroController,
                     decoration: InputDecoration(
                       labelText: 'Bairro',
-                      hintText: bairro,
-                      suffixIcon: Icon(Icons.edit),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Container(
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: complementoController,
-                    decoration: InputDecoration(
-                      labelText: 'Complemento',
-                      hintText: complemento,
                       suffixIcon: Icon(Icons.edit),
                     ),
                   ),
@@ -198,7 +107,6 @@ class _CadEnderecoState extends State<CadEndereco> {
                     controller: cidadeController,
                     decoration: InputDecoration(
                       labelText: 'Cidade',
-                      hintText: cidade,
                       suffixIcon: Icon(Icons.edit),
                     ),
                   ),
@@ -209,22 +117,44 @@ class _CadEnderecoState extends State<CadEndereco> {
                 child: Container(
                   child: TextFormField(
                     keyboardType: TextInputType.text,
-                    controller: cepController,
+                    controller: complementoController,
                     decoration: InputDecoration(
-                      labelText: 'CEP',
-                      hintText: cep,
+                      labelText: 'Complemento',
                       suffixIcon: Icon(Icons.edit),
                     ),
                   ),
                 ),
               ),
               Padding(
-                  padding: EdgeInsets.all(10),
+                padding: EdgeInsets.all(10),
+                child: Container(
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    controller: cepController,
+                    decoration: InputDecoration(
+                      labelText: 'CEP',
+                      suffixIcon: Icon(Icons.edit),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(10),
+                child: Center(
                   child: Container(
                     width: 160,
                     child: OutlinedButton(
                       onPressed: () {
-                        adicionarEndereco();
+                        endereco.adicionarEndereco(
+                          Endereco(
+                              ruaController.text,
+                              numeroController.text,
+                              bairroController.text,
+                              complementoController.text,
+                              cidadeController.text,
+                              cepController.text,
+                              auth.usuario!.uid,),
+                        );
                       },
                       child: Text(
                         'Salvar',
@@ -245,11 +175,14 @@ class _CadEnderecoState extends State<CadEndereco> {
                         ),
                       ),
                     ),
-                  )),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
+
 }

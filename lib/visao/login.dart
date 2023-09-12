@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:planetaveg/servico/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:planetaveg/servico/auth_service.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -18,6 +18,7 @@ class _LoginState extends State<Login> {
   late String titulo;
   late String acaoBotao;
   late String textBotao;
+  late String textBotao2;
   bool loading = false;
 
   @override
@@ -33,11 +34,13 @@ class _LoginState extends State<Login> {
       if (isLogin) {
         titulo = "Bem vindo";
         acaoBotao = "Entrar";
-        textBotao = "Não tem uma conta? Cadastre-se!";
+        textBotao = "Não tem uma conta?";
+        textBotao2 = "Registre-se";
       } else {
         titulo = "Cadastre-se";
         acaoBotao = "Cadastrar";
-        textBotao = "Já tem uma conta? Entre!";
+        textBotao = "Já tem uma conta?";
+        textBotao2 = 'Entre';
       }
     });
   }
@@ -75,68 +78,70 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF672F67),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              //LOGO:
-              Container(
-                child: Image.asset(
-                  'assets/logo.png',
-                  // width: 250,
-                ),
-                height: 250,
+       resizeToAvoidBottomInset: false,
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              color: Color(0xFF672F67),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 500),
+              child: Image.asset(
+                'assets/logo.png',
+                width: 150,
+                height: 150,
               ),
-              //"CAIXINHA" BRANCA DO LOGIN
-              Container(
-                width: 330,
-                height: 450,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.white.withOpacity(0.8),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 300.0),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50),
+                    topRight: Radius.circular(50)),
+                color: Colors.white,
+              ),
+              height: double.infinity,
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                child: SingleChildScrollView(
                   child: Form(
                     key: formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 30),
-                          child: Text(
-                            titulo,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFF672F67),
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          titulo,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 58, 58, 58),
                           ),
                         ),
-                        //TEXT FIELD DO EMAIL
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 20),
+                        Container(
+                          height: 80,
                           child: TextFormField(
                             controller: email,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 10),
-                              labelText: 'Email: ',
-                              labelStyle: TextStyle(
-                                color: Color(0xFF7A8727),
+                              suffixIcon: Icon(
+                                Icons.email,
+                                color: Colors.grey,
                               ),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0xFF7A8727),
-                                  style: BorderStyle.solid,
-                                  width: 5,
+                              label: Text(
+                                'Email',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromARGB(255, 122, 135, 39),
                                 ),
-                                borderRadius: BorderRadius.circular(30),
                               ),
                             ),
                             validator: (value) {
@@ -147,101 +152,119 @@ class _LoginState extends State<Login> {
                             },
                           ),
                         ),
-                        //TEXT FIELD DA SENHA
-                        TextFormField(
-                          controller: senha,
-                          keyboardType: TextInputType.text,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 20, horizontal: 10),
-                            labelText: 'Senha: ',
-                            labelStyle: TextStyle(
-                              color: Color(0xFF7A8727),
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0xFF7A8727),
-                                style: BorderStyle.solid,
-                                width: 5,
+                        Container(
+                          height: 80,
+                          child: TextFormField(
+                            controller: senha,
+                            keyboardType: TextInputType.text,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              suffixIcon: Icon(
+                                Icons.key_sharp,
+                                color: Colors.grey,
                               ),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Informe sua senha!";
-                            } else if (value.length < 6) {
-                              return "Sua senha deve ter no mínimo 6 caracteres.";
-                            }
-                            return null;
-                          },
-                        ),
-                        //BOTAO DE ENTRAR
-                        Padding(
-                          padding: EdgeInsets.only(top: 20, bottom: 20),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Color(0xFF7A8727)),
-                              fixedSize: MaterialStateProperty.all<Size>(
-                                  Size(180, 50)),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
+                              label: Text(
+                                'Senha',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF7A8727),
                                 ),
                               ),
                             ),
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                if (isLogin) {
-                                  login();
-                                } else {
-                                  registrar();
-                                }
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Informe sua senha!";
+                              } else if (value.length < 6) {
+                                return "Sua senha deve ter no mínimo 6 caracteres.";
                               }
+                              return null;
                             },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: (loading)
-                                  ? [
-                                      Padding(
-                                        padding: EdgeInsets.all(16),
-                                        child: SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(
-                                              color: Colors.white),
-                                        ),
-                                      )
-                                    ]
-                                  : [
-                                      Text(
-                                        acaoBotao,
-                                        style: TextStyle(fontSize: 25),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: isLogin
+                              ? Text(
+                                  'Esqueceu sua senha?',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                    color: Color.fromARGB(255, 58, 58, 58),
+                                  ),
+                                )
+                              : Text(''),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            primary: Color(0xFF7A8727),
+                          ),
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              if (isLogin) {
+                                login();
+                              } else {
+                                registrar();
+                              }
+                            }
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 90),
+                            child: Text(
+                              acaoBotao,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
-                        //REGISTRAR:
-                        TextButton(
-                          onPressed: () => setFormAction(!isLogin),
-                          child: Text(
-                            textBotao,
-                            style: TextStyle(color: Colors.black),
-                          ),
+                        const SizedBox(
+                          height: 90,
                         ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                textBotao,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () => setFormAction(!isLogin),
+                                child: Text(
+                                  textBotao2,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                    color: Color(0xFF7A8727),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
                 ),
-              )
-            ],
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

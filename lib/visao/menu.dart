@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:planetaveg/visao/enderecos.dart';
+import 'package:planetaveg/visao/endereco/index.dart';
 import 'package:planetaveg/visao/carrinho.dart';
-import 'package:planetaveg/visao/perfilUsuario.dart';
+import 'package:planetaveg/visao/usuario/perfilUsuario.dart';
 import 'package:planetaveg/visao/home.dart';
 import 'package:planetaveg/servico/auth_service.dart';
 import 'package:planetaveg/visao/pesquisa.dart';
@@ -145,7 +145,8 @@ class _MenuState extends State<Menu> {
                 onTap: () {
                    Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>  Enderecos(auth: context.read<AuthService>())),
+                    MaterialPageRoute(builder: (context) =>  EnderecosIndex(),
+                    )
                   );
                 },
               ),

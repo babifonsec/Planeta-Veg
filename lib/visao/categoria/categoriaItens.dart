@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:planetaveg/visao/categoriaDetalhes.dart';
+import 'package:planetaveg/visao/categoria/categoriaDetalhes.dart';
 
 class CategoriaItem extends StatelessWidget {
   final String image;

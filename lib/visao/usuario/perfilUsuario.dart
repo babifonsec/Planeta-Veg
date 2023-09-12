@@ -10,7 +10,7 @@ import 'package:planetaveg/servico/auth_service.dart';
 import 'package:flutter/foundation.dart';
 
 class Usuario extends StatefulWidget with ChangeNotifier {
-  AuthService auth;
+  final AuthService auth;
   Usuario({required this.auth});
 
   @override

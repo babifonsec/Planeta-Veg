@@ -1,76 +1,77 @@
+
 import 'package:flutter/material.dart';
-import 'package:planetaveg/visao/categoriaItens.dart';
+import 'package:planetaveg/visao/categoria/categoriaItens.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:planetaveg/visao/listaLojas.dart';
+import 'package:planetaveg/visao/lojas/listaLojas.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key});
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
-        child: Center(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "Categorias",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF7A8727),
-                        fontWeight: FontWeight.bold,
-                      ),
+      child: Center(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    "Categorias",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Color(0xFF7A8727),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Container(
-                      height: 87,
-                      child: categoriaList(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    height: 87,
+                    child: categoriaList(),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: Text(
+                    "Promoções",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Color(0xFF7A8727),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    child: Text(
-                      "Promoções",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF7A8727),
-                        fontWeight: FontWeight.bold,
-                      ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: carousel(),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                  child: Text(
+                    "Estabelecimentos",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Color(0xFF7A8727),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    child: carousel(),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                    child: Text(
-                      "Estabelecimentos",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Color(0xFF7A8727),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10, left: 7, right: 7),
-                    child: ordenar(),
-                  ),
-                  ListaLojas(),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10, left: 7, right: 7),
+                  child: ordenar(),
+                ),
+                ListaLojas(),
+              ],
             ),
           ),
         ),
-    
+      ),
     );
   }
 }

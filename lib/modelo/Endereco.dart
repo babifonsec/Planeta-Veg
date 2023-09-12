@@ -1,5 +1,5 @@
 class Endereco {
-  late String _id;
+  late String _uidUser;
   late String _rua;
   late String _numero;
   late String _bairro;
@@ -7,10 +7,10 @@ class Endereco {
   late String _cidade;
   late String _cep;
 
-  Endereco(this._rua, this._numero, this._bairro, this._complemento,this._cidade,this._cep);
+  Endereco(this._rua, this._numero, this._bairro, this._complemento,this._cidade,this._cep,this._uidUser);
 
   Endereco.map(dynamic obj) {
-    this._id = obj['id'];
+    this._uidUser = obj['uidUser'];
     this._rua = obj['rua'];
     this._numero = obj['numero'];
     this._bairro = obj['bairro'];
@@ -19,7 +19,7 @@ class Endereco {
     this._cep = obj['cep'];
   }
 
-  String get id => _id;
+  String get uidUser => _uidUser;
   String get rua => _rua;
   String get numero=> _numero;
   String get bairro => _bairro;
@@ -31,8 +31,8 @@ class Endereco {
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
 
-    if (_id != null) {
-      map['id'] = _id;
+    if (_uidUser != null) {
+      map['uidUser'] = _uidUser;
     }
     map['rua'] = _rua;
     map['numero'] = _numero;
@@ -45,7 +45,7 @@ class Endereco {
   }
 
   Endereco.fromMap(Map<String, dynamic> map, String id) {
-     this._id = map['id'] ?? '';
+     this._uidUser = map['uidUser'] ?? '';
     this._rua = map['rua']?? '';
     this._numero = map['numero']??'';
     this._bairro = map['bairro']??'';
