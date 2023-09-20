@@ -3,11 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/modelo/Cliente.dart';
 import 'package:planetaveg/servico/auth_service.dart';
-import 'package:flutter/foundation.dart';
 
 class Usuario extends StatefulWidget with ChangeNotifier {
   final AuthService auth;
@@ -257,6 +257,15 @@ class _UsuarioState extends State<Usuario> {
                           telefoneController.text,
                           imageUrl,
                         ));
+                         Fluttertoast.showToast(
+                    msg: "Perfil atualizado com sucesso",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Color(0xFF672F67),
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
                       },
                       child: Text(
                         'Salvar',

@@ -14,9 +14,35 @@ class _ListaLojasState extends State<ListaLojas> {
 
   @override
   Widget build(BuildContext context) {
+    bool orderByAscending = true;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              child: Text(
+                "Estabelecimentos",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF7A8727),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+           
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  orderByAscending = false; // Ordenar de A-Z
+                });
+              },
+              icon: Icon(Icons.sort_by_alpha_outlined),
+            ),
+          ],
+        ),
         StreamBuilder<QuerySnapshot>(
             stream: db.collection('lojas').snapshots(),
             builder: (context, snapshot) {
@@ -36,6 +62,19 @@ class _ListaLojasState extends State<ListaLojas> {
                 return const Center(
                   child: Text('Nenhuma loja encontrada.'),
                 );
+              }
+              // Converte os documentos em uma lista para ordenação
+              List<DocumentSnapshot> lojasDocs = snapshot.data!.docs.toList();
+
+              // Ordena a lista de acordo com a preferência
+              if (orderByAscending) {
+                lojasDocs.sort((a, b) =>
+                    (a.data() as Map<String, dynamic>)['nome']
+                        .compareTo((b.data() as Map<String, dynamic>)['nome']));
+              } else {
+                lojasDocs.sort((a, b) =>
+                    (b.data() as Map<String, dynamic>)['nome']
+                        .compareTo((a.data() as Map<String, dynamic>)['nome']));
               }
 
               return ListView.builder(

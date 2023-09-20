@@ -1,6 +1,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/modelo/Endereco.dart';
 import 'package:planetaveg/controle/EnderecoController.dart';
@@ -155,6 +156,15 @@ class _EnderecosCreateState extends State<EnderecosCreate> {
                               cepController.text,
                               auth.usuario!.uid,),
                         );
+                         Fluttertoast.showToast(
+                    msg: "Endereço salvo com sucesso",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Color(0xFF672F67),
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
                       },
                       child: Text(
                         'Salvar',

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-//import 'package:planetaveg/controle/ProdutoController.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planetaveg/database/dbHelper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ProdutoDetalhes extends StatefulWidget {
   final String produtoUid;
@@ -21,6 +22,8 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
   int maxCharacters = 140;
   int quantidade = 1;
 
+  User? user = FirebaseAuth.instance.currentUser;
+
   void aumentarQuantidade() {
     setState(() {
       quantidade++;
@@ -39,6 +42,61 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
+  }
+
+  Future<void> adicionarProduto(int qtde, String uidProduto) async {
+    try {
+      DocumentSnapshot produtoSnapshot =
+          await db.collection('produtos').doc(uidProduto).get();
+
+      if (produtoSnapshot.exists) {
+        Map<String, dynamic> produtoData =
+            produtoSnapshot.data() as Map<String, dynamic>;
+
+        // Calcule o valor total do produto
+        double precoProduto = double.parse(produtoData['preco'] ?? '0.0');
+        double valorTotalProduto = precoProduto * qtde;
+
+        // Crie o novo item do carrinho com base nos dados do produto e no valor total
+        Map<String, dynamic> novoProdutoNoCarrinho = {
+          'qtde': qtde,
+          'produto': produtoData,
+          'valorTotal': valorTotalProduto,
+        };
+
+        DocumentReference docRef = db.collection('carrinho').doc(user!.uid);
+
+        // Primeiro, obtenha os dados atuais do documento
+        DocumentSnapshot docSnapshot = await docRef.get();
+        if (docSnapshot.exists) {
+          Map<String, dynamic> data =
+              docSnapshot.data() as Map<String, dynamic>;
+
+          // Verifica se o campo 'produtos' existe no documento
+          if (data.containsKey('produtos')) {
+            List<dynamic> produtos = data['produtos'];
+            // Adiciona o novo produto ao array de produtos
+            produtos.add(novoProdutoNoCarrinho);
+            // Atualiza o documento com o novo array de produtos
+            await docRef.update({'produtos': produtos});
+          } else {
+            // Se o campo 'produtos' não existir, cria o novo produto
+            await docRef.set({
+              'produtos': [novoProdutoNoCarrinho]
+            }, SetOptions(merge: true));
+          }
+        } else {
+          // Se o documento não existir, cria um novo
+          await docRef.set({
+            'produtos': [novoProdutoNoCarrinho]
+          });
+        }
+      } else {
+        print('Produto com UID $uidProduto não encontrado.');
+      }
+    } catch (e) {
+      print('Erro ao adicionar produto ao carrinho: $e');
+    }
   }
 
   @override
@@ -109,7 +167,19 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
                         minimumSize: Size(220, 50),
                         primary: Color(0xFF672F67),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        adicionarProduto(quantidade, produtoUid);
+
+                        Fluttertoast.showToast(
+                          msg: "Produto adicionado ao carrinho",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Color(0xFF672F67),
+                          textColor: Colors.white,
+                          fontSize: 15.0,
+                        );
+                      },
                       child: Text(
                         'Adicionar',
                         style: TextStyle(color: Colors.white, fontSize: 16),

@@ -1,14 +1,19 @@
-
 import 'package:flutter/material.dart';
 import 'package:planetaveg/visao/categoria/categoriaItens.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:planetaveg/visao/lojas/listaLojas.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key});
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
   Widget build(BuildContext context) {
+   
 
     return SingleChildScrollView(
       child: Center(
@@ -51,21 +56,7 @@ class Home extends StatelessWidget {
                   padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                   child: carousel(),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Text(
-                    "Estabelecimentos",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xFF7A8727),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10, left: 7, right: 7),
-                  child: ordenar(),
-                ),
+              
                 ListaLojas(),
               ],
             ),
@@ -116,6 +107,7 @@ Widget categoriaList() {
         image: "assets/chocolate.png",
         uid: 'NbuuxNeXQf8HEgnyESdb',
       ),
+      CategoriaItem(image: 'assets/coxinha.png', uid: 'oBCNeQJBpo8aM9SolZPJ')
     ],
   );
 }

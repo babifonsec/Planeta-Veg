@@ -4,7 +4,7 @@ class Cliente {
   late String _cpf;
   late String _telefone;
   late String _imageUrl;
-  late List<Map<String, dynamic>> _enderecos;
+
 
   Cliente(this._nome, this._cpf, this._telefone, this._imageUrl);
 
@@ -21,7 +21,7 @@ class Cliente {
   String get cpf => _cpf;
   String get telefone => _telefone;
   String get imageUrl => _imageUrl;
-  List<Map <String, dynamic>> get enderecos => _enderecos;
+
 
   // Converte o objeto Loja em um mapa que pode ser armazenado no Firestore
   Map<String, dynamic> toMap() {

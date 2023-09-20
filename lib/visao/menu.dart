@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/visao/endereco/index.dart';
 import 'package:planetaveg/visao/carrinho.dart';
+import 'package:planetaveg/visao/pedido/historicoPedido.dart';
 import 'package:planetaveg/visao/usuario/perfilUsuario.dart';
 import 'package:planetaveg/visao/home.dart';
 import 'package:planetaveg/servico/auth_service.dart';
@@ -9,6 +13,20 @@ import 'package:provider/provider.dart';
 
 //indice de seleção da tela
 int _selectedIndex = 0;
+String imageUrl = '';
+late final FirebaseAuth _auth;
+late final User? user;
+FirebaseFirestore db = DBFirestore.get();
+DocumentSnapshot? snapshot;
+
+//pegar nome do usuario logado
+String getNomeFromSnapshot(DocumentSnapshot? snapshot) {
+  if (snapshot != null && snapshot.exists) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return data['nome'];
+  }
+  return '';
+}
 
 //vetor de telas a serem utilizadas
 List<Widget> _stOptions = <Widget>[
@@ -46,9 +64,23 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     _selectedIndex = _opcao;
+
+    _auth = FirebaseAuth.instance;
+    user = _auth.currentUser;
+    db.collection('clientes').doc(user?.uid).get().then(
+      (DocumentSnapshot docSnapshot) {
+        setState(
+          () {
+            snapshot = docSnapshot;
+            imageUrl = docSnapshot.get('imageUrl');
+          },
+        );
+      },
+    );
   }
 
   Widget build(BuildContext context) {
+    final nome = getNomeFromSnapshot(snapshot);
     if (_selectedIndex == 1) {
       return Scaffold(
         appBar: AppBar(
@@ -81,9 +113,9 @@ class _MenuState extends State<Menu> {
     } else {
       return Scaffold(
         appBar: AppBar(
-           iconTheme: IconThemeData(
-          color: Colors.white, 
-        ),
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
           backgroundColor: Color(0xFF672F67),
           actions: [
             IconButton(
@@ -95,32 +127,76 @@ class _MenuState extends State<Menu> {
                   ),
                 );
               },
-              icon: Icon(Icons.shopping_cart,
-               color: Colors.white,),
+              icon: Icon(
+                Icons.shopping_cart,
+                color: Colors.white,
+              ),
             ),
           ],
         ),
         drawer: Drawer(
-          
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
               SizedBox(
-                height: 160,
+                height: 200,
                 child: DrawerHeader(
                   decoration: BoxDecoration(
-                    color: Color(0xFF672F67),
+                    color: Color(0xFF672F67).withOpacity(0.4),
                   ),
-                  child: Container(
-                    child: Text(
-                      '*logo*',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25,
+                  child: Row(children: [
+                    Container(
+                      width: 105,
+                      height: 105,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1),
+                        borderRadius: BorderRadius.circular(60),
+                        color: Color.fromARGB(255, 216, 216, 216),
+                      ),
+                      child: imageUrl == null
+                          ? Icon(
+                              Icons.person,
+                              size: 60,
+                              color: Colors.grey,
+                            )
+                          : ClipOval(
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: Image.network(
+                                  imageUrl,
+                                ),
+                              ),
+                            ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    Usuario(auth: context.read<AuthService>())),
+                          );
+                        },
+                        child: Text(
+                          nome,
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
-                  ),
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Usuario(auth: context.read<AuthService>())),
+                        );
+                      },
+                    ),
+                  ]),
                 ),
               ),
               ListTile(
@@ -132,7 +208,9 @@ class _MenuState extends State<Menu> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Usuario(auth: context.read<AuthService>())),
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            Usuario(auth: context.read<AuthService>())),
                   );
                 },
               ),
@@ -143,11 +221,11 @@ class _MenuState extends State<Menu> {
                 ),
                 title: Text('Endereços cadastrados'),
                 onTap: () {
-                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  EnderecosIndex(),
-                    )
-                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EnderecosIndex(),
+                      ));
                 },
               ),
               ListTile(
@@ -156,7 +234,13 @@ class _MenuState extends State<Menu> {
                   color: Color(0xFF7A8727),
                 ),
                 title: Text('Histórico de pedidos'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => Historico(),
+                    ),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(
@@ -165,7 +249,7 @@ class _MenuState extends State<Menu> {
                 ),
                 title: Text('Configurações'),
                 onTap: () {},
-              ),  
+              ),
               ListTile(
                 leading: Icon(
                   Icons.logout,
@@ -210,8 +294,10 @@ Widget buscar() {
         borderRadius: BorderRadius.circular(60)),
     child: Row(
       children: <Widget>[
-        Icon(Icons.search,
-        color: Colors.white,),
+        Icon(
+          Icons.search,
+          color: Colors.white,
+        ),
         Container(
           height: 45,
           width: 250,

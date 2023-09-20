@@ -1,7 +1,8 @@
-  import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:planetaveg/modelo/Endereco.dart';
 
-class EnderecoController {
+class EnderecoController with ChangeNotifier{
   final CollectionReference _enderecoCollection =
       FirebaseFirestore.instance.collection('enderecos');
 

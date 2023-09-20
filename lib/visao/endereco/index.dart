@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:planetaveg/controle/EnderecoController.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/servico/auth_service.dart';
@@ -46,7 +47,10 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
             ),
           );
         },
-        child: const Icon(Icons.add, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -96,7 +100,7 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
                         snapshot.data!.docs[index];
                     final enderecoData =
                         enderecoDoc.data() as Map<String, dynamic>;
-                   String? enderecoId = enderecoDoc.id;
+                    String? enderecoId = enderecoDoc.id;
 
                     return Padding(
                       padding: const EdgeInsets.only(
@@ -118,7 +122,8 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
                                 onPressed: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (context) => EnderecoEdit(enderecoId: enderecoId),
+                                      builder: (context) =>
+                                          EnderecoEdit(enderecoId: enderecoId),
                                     ),
                                   );
                                 },
@@ -132,8 +137,19 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
                                         .read<EnderecoController>()
                                         .excluirEndereco(enderecoUid);
                                   } else {
-                                   throw Exception('UID do Endereco ausente ou nulo.');
+                                    throw Exception(
+                                        'UID do Endereco ausente ou nulo.');
                                   }
+
+                                  Fluttertoast.showToast(
+                                    msg: "Endereço removido com sucesso",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Color(0xFF672F67),
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
                                 },
                               ),
                             ],

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:planetaveg/controle/ProdutoController.dart';
 import 'package:planetaveg/database/dbHelper.dart';
+import 'package:planetaveg/visao/produto/produtoDetalhes.dart';
 
 class CategoriaDetalhes extends StatefulWidget {
   CategoriaDetalhes(String this.uid);
@@ -95,49 +96,115 @@ class _CategoriaDetalhesState extends State<CategoriaDetalhes> {
                   );
                 }
 
-                // Exibe a lista de Enderecos
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    final DocumentSnapshot categoriaDoc =
-                        snapshot.data!.docs[index];
-                    final produtoData =
-                        categoriaDoc.data() as Map<String, dynamic>;
+                return SingleChildScrollView(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        final DocumentSnapshot productDoc =
+                            snapshot.data!.docs[index];
+                        final productData =
+                            productDoc.data() as Map<String, dynamic>;
+                        String? produtoId = productDoc.id;
 
-                    return Padding(
-                      padding: const EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                        bottom: 2,
-                        top: 5,
-                      ),
-                      child: Container(
-                        width: double.infinity,
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Container(
-                            width: 50,
-                            height: 50,
-                            child: ClipOval(
-                              child: Image.network(
-                                produtoData['imagem'],
-                                fit: BoxFit.cover,
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProdutoDetalhes(produtoId)),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10, left: 10, right: 10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      height: 100,
+                                      width: 120,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          productData['imagem'],
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8, bottom: 8, right: 8),
+                                            child: Text(
+                                              productData['nome'],
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8, bottom: 10),
+                                            child:
+                                                Text(productData['descricao']),
+                                          ),
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 150,
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 5),
+                                                child: Container(
+                                                  width: 65,
+                                                  height: 25,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      color: Color.fromARGB(
+                                                          255, 122, 135, 39)),
+                                                  child: Center(
+                                                    child: Text(
+                                                      'R\$ ${productData['preco']}',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                          title: Text(
-                            produtoData['nome'] ?? '',
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                          subtitle: Text(produtoData['descricao']),
-                          onTap: () {},
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      }),
                 );
               },
             ),

@@ -1,23 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:planetaveg/controle/PedidoController.dart';
 import 'package:planetaveg/database/dbHelper.dart';
-import 'package:planetaveg/visao/pedido/pedido.dart';
+import 'package:planetaveg/modelo/Pedido.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class Carrinho extends StatefulWidget {
-  const Carrinho({super.key});
+class FinalizarPedido extends StatefulWidget {
+  const FinalizarPedido({Key? key}) : super(key: key);
 
   @override
-  State<Carrinho> createState() => _CarrinhoState();
+  State<FinalizarPedido> createState() => _FinalizarPedidoState();
 }
 
-class _CarrinhoState extends State<Carrinho> {
-  User? user = FirebaseAuth.instance.currentUser;
+class _FinalizarPedidoState extends State<FinalizarPedido> {
   FirebaseFirestore db = DBFirestore.get();
+  final User? user = FirebaseAuth.instance.currentUser;
+  String? uidEndereco; // Alterei para String opcional
+  String rua = '';
   double valorTotalCompra = 0.0;
 
-// Método para calcular o valor total
-  double calcularValorTotal(List<dynamic> produtos) {
+  PedidoController pedidoController = PedidoController();
+  List<Map<String, dynamic>> produtos = [];
+
+  // Método para calcular o valor total
+  double calcularValorTotal(List<Map<String, dynamic>> produtos) {
     double valorTotal = 0.0;
     for (int i = 0; i < produtos.length; i++) {
       valorTotal = valorTotal + produtos[i]['valorTotal'];
@@ -28,12 +35,14 @@ class _CarrinhoState extends State<Carrinho> {
   @override
   void initState() {
     super.initState();
-    // Obtem os dados do carrinho e chama o metodo pra calcular o valor total
+    // Obtem os dados do carrinho e chama o método para calcular o valor total
     db.collection('carrinho').doc(user!.uid).get().then((snapshot) {
       if (snapshot.exists) {
         Map<String, dynamic> carrinhoData =
             snapshot.data() as Map<String, dynamic>;
-        List<dynamic> produtos = carrinhoData['produtos'];
+        List<dynamic> produtosData = carrinhoData['produtos'];
+
+        produtos = List<Map<String, dynamic>>.from(produtosData);
         setState(() {
           valorTotalCompra = calcularValorTotal(produtos);
         });
@@ -41,49 +50,25 @@ class _CarrinhoState extends State<Carrinho> {
     });
   }
 
-  Future<void> excluirItem(int index) async {
-    try {
-      // Obtenha o documento do carrinho do usuário atual
-      DocumentSnapshot carrinhoSnapshot =
-          await db.collection('carrinho').doc(user!.uid).get();
-
-      // Verifique se o carrinho existe e tem produtos
-      if (carrinhoSnapshot.exists) {
-        Map<String, dynamic> carrinhoData =
-            carrinhoSnapshot.data() as Map<String, dynamic>;
-        List<dynamic> produtos = List.from(carrinhoData['produtos']);
-
-        // Verifique se o índice é válido
-        if (index >= 0 && index < produtos.length) {
-          // Remova o produto do carrinho usando o índice
-          produtos.removeAt(index);
-
-          // Atualize o carrinho com os produtos restantes
-          await db.collection('carrinho').doc(user!.uid).update({
-            'produtos': produtos,
-          });
-
-          // Atualize o valor total da compra
-          setState(() {
-            valorTotalCompra = calcularValorTotal(produtos);
-          });
-        }
-      }
-    } catch (e) {
-      print('Erro ao excluir item do carrinho: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    Stream<QuerySnapshot> enderecoStream = FirebaseFirestore.instance
+        .collection('enderecos')
+        .where('uidUser', isEqualTo: user!.uid)
+        .snapshots();
+
+    DocumentSnapshot enderecoSnapshot;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF672F67),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
         title: Text(
-          'Carrinho',
+          'Finalizando pedido',
           style: TextStyle(color: Colors.white),
         ),
-        iconTheme: IconThemeData(color: Colors.white),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
@@ -97,15 +82,34 @@ class _CarrinhoState extends State<Carrinho> {
                 primary: Color(0xFF672F67),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FinalizarPedido(),
-                  ),
-                );
+                if (uidEndereco != null) {
+                  pedidoController.adicionarpedido(
+                    Pedido(
+                      user!.uid,
+                      uidEndereco!,
+                      produtos,
+                      valorTotalCompra,
+                    ),
+                    user!.uid,
+                  );
+
+                  // Exibe um Toast de "Pedido realizado com sucesso"
+                  Fluttertoast.showToast(
+                    msg: "Pedido realizado com sucesso",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Color(0xFF672F67),
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+
+                  // Navega para a página inicial
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                }
               },
               child: Text(
-                'Pedir',
+                'Finalizar',
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
@@ -113,7 +117,68 @@ class _CarrinhoState extends State<Carrinho> {
         ),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Padding(
+            padding: EdgeInsets.only(
+              left: 10,
+              top: 10,
+            ),
+            child: Text(
+              'Qual o endereço de entrega?',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(0xFF7A8727),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: enderecoStream,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+                List<DropdownMenuItem<String>> dropdownItems = [];
+                snapshot.data!.docs.forEach((doc) {
+                  String endereco = doc['rua'];
+                  String uidEndereco = doc.id;
+
+                  dropdownItems.add(
+                    DropdownMenuItem<String>(
+                      value: uidEndereco,
+                      child: Text(endereco),
+                    ),
+                  );
+                });
+
+                return DropdownButtonFormField<String>(
+                  value: uidEndereco, // Alterado para a variável local
+                  onChanged: (value) {
+                    setState(() {
+                      uidEndereco = value; // Atualiza a variável local
+                    });
+                  },
+                  items: dropdownItems,
+                  hint: Text(rua),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Produtos: ',
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(0xFF7A8727),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           FutureBuilder<DocumentSnapshot>(
             future: db.collection('carrinho').doc(user!.uid).get(),
             builder: (context, snapshot) {
@@ -164,28 +229,12 @@ class _CarrinhoState extends State<Carrinho> {
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(left: 5),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        nome,
-                                        style: TextStyle(
-                                         
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 17,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.remove_circle_outline,
-                                          color: Colors.grey.shade700,
-                                        ),
-                                        onPressed: () {
-                                          excluirItem(index);
-                                        },
-                                      ),
-                                    ],
+                                  child: Text(
+                                    nome,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                    ),
                                   ),
                                 ),
                                 Padding(
