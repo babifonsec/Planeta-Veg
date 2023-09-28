@@ -34,8 +34,8 @@ class _LojasDetalhesState extends State<LojasDetalhes> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: 100, // Altura desejada para o Container
-              color: Colors.white, // Cor do fundo branco
+              height: 400,
+              color: Colors.white, 
             ),
           ),
           StreamBuilder<DocumentSnapshot>(

@@ -40,6 +40,8 @@ class _EnderecosCreateState extends State<EnderecosCreate> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text('Cadastre seu endereço', style: TextStyle(color: Colors.white),),
+
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color(0xFF672F67),
       ),
@@ -49,18 +51,6 @@ class _EnderecosCreateState extends State<EnderecosCreate> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  'Cadastre seu Endereço:',
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Color(0xFF7A8727),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              
               Padding(
                 padding: EdgeInsets.all(10),
                 child: Container(

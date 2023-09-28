@@ -27,6 +27,7 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
     User? user = _auth.currentUser;
     return Scaffold(
       appBar: AppBar(
+        title: Text('Endereços Cadastrados', style: TextStyle(color: Colors.white),),
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color(0xFF672F67),
         leading: IconButton(
@@ -56,17 +57,7 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Text(
-                'Endereços Cadastrados:',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Color(0xFF7A8727),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+
             StreamBuilder<QuerySnapshot>(
               stream: db
                   .collection('enderecos')

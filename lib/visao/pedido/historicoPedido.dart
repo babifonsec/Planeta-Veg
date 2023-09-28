@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:planetaveg/visao/pedido/pedidosDetalhes.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 
 class Historico extends StatefulWidget {
@@ -18,6 +19,7 @@ class _HistoricoState extends State<Historico> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Histórico de Pedidos', style: TextStyle(color: Colors.white),),
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color(0xFF672F67),
         leading: IconButton(
@@ -28,44 +30,46 @@ class _HistoricoState extends State<Historico> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: db
+        stream: FirebaseFirestore.instance
             .collection('pedidos')
             .where('uidCliente', isEqualTo: user!.uid)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
           if (snapshot.hasError) {
             return Text('Erro: ${snapshot.error}');
           }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Text('Nenhum pedido encontrado.');
+          if (snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Text('Você ainda não fez nenhum pedido.'),
+            );
           }
 
-          // Renderize a lista de pedidos aqui
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              final pedido =
-                  snapshot.data!.docs[index].data() as Map<String, dynamic>;
-              List<dynamic> produtos = pedido['produtos'];
+              var pedido = snapshot.data!.docs[index];
+              var pedidoData = pedido.data() as Map<String, dynamic>;
 
-              // Verifique se há produtos antes de acessar
-              if (produtos != null && produtos.isNotEmpty) {
-                // Suponhamos que você queira exibir o nome do primeiro produto no pedido
-                String nomeDoProduto = produtos[0]['nome'];
-
-                return ListTile(
-                  title: Text('Pedido: $nomeDoProduto'),
-                  // Exiba outras informações do pedido conforme necessário
-                );
-              } else {
-                return ListTile(
-                  title: Text('Pedido sem produtos'),
-                  // Exiba outras informações do pedido conforme necessário
-                );
-              }
+              return ListTile(
+                title: Text('Pedido #${pedido.id}'),
+                subtitle: Text('Total: R\$ ${pedidoData['valorTotal']}'),
+                onTap: () {
+                   Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => DetalhesPedidoPage(
+              orderId: pedido.id,
+              produtos: pedidoData['produtos'],
+              valorTotal: pedidoData['valorTotal'],
+              enderecoUid: pedidoData['uidEndereco'],
+            ),
+          ),
+        );
+                },
+                // Adicione mais informações do pedido, como data, status, etc., aqui
+              );
             },
           );
         },
