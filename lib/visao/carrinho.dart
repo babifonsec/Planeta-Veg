@@ -96,14 +96,16 @@ class _CarrinhoState extends State<Carrinho> {
                 minimumSize: Size(220, 55),
                 primary: Color(0xFF672F67),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FinalizarPedido(),
-                  ),
-                );
-              },
+              onPressed: valorTotalCompra > 0
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FinalizarPedido(),
+                        ),
+                      );
+                    }
+                  : null, // Desabilita o botão se valorTotalCompra for igual a 0
               child: Text(
                 'Pedir',
                 style: TextStyle(color: Colors.white, fontSize: 20),
@@ -171,7 +173,6 @@ class _CarrinhoState extends State<Carrinho> {
                                       Text(
                                         nome,
                                         style: TextStyle(
-                                         
                                           fontWeight: FontWeight.w500,
                                           fontSize: 17,
                                         ),

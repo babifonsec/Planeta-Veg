@@ -287,7 +287,7 @@ class _LojasDetalhesState extends State<LojasDetalhes> {
                                                         Row(
                                                           children: [
                                                             SizedBox(
-                                                              width: 150,
+                                                              width: 130,
                                                             ),
                                                             Padding(
                                                               padding:
@@ -295,7 +295,7 @@ class _LojasDetalhesState extends State<LojasDetalhes> {
                                                                           .only(
                                                                       left: 5),
                                                               child: Container(
-                                                                width: 65,
+                                                                width: 80,
                                                                 height: 25,
                                                                 decoration: BoxDecoration(
                                                                     borderRadius:

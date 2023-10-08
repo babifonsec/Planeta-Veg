@@ -153,7 +153,7 @@ class _MenuState extends State<Menu> {
                         borderRadius: BorderRadius.circular(60),
                         color: Color.fromARGB(255, 216, 216, 216),
                       ),
-                      child: imageUrl == null
+                      child: imageUrl==''
                           ? Icon(
                               Icons.person,
                               size: 60,

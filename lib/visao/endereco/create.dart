@@ -1,6 +1,8 @@
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/modelo/Endereco.dart';
@@ -120,6 +122,10 @@ class _EnderecosCreateState extends State<EnderecosCreate> {
                 padding: EdgeInsets.all(10),
                 child: Container(
                   child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CepInputFormatter()
+                    ],
                     keyboardType: TextInputType.number,
                     controller: cepController,
                     decoration: InputDecoration(

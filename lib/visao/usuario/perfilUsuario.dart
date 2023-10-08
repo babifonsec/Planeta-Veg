@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/modelo/Cliente.dart';
@@ -75,28 +78,43 @@ class _UsuarioState extends State<Usuario> {
   }
 
   salvarCliente(Cliente cliente) async {
-    DocumentSnapshot snapshot = await db.collection('clientes').doc(auth.usuario!.uid).get();
+  DocumentSnapshot snapshot =
+      await db.collection('clientes').doc(auth.usuario!.uid).get();
+  
+  if (snapshot.exists) {
+    // Cliente já existe: atualiza os dados existentes
     Map<String, dynamic> dadosExistentes = snapshot.data() as Map<String, dynamic>;
 
+    await db.collection('clientes').doc(auth.usuario!.uid).update({
+      'nome': cliente.nome,
+      'cpf': cliente.cpf,
+      'telefone': cliente.telefone,
+      'imageUrl': cliente.imageUrl,
+    });
+    
+    // Mantem o endereço existente
+    if (dadosExistentes.containsKey('enderecos')) {
+      await db.collection('clientes').doc(auth.usuario!.uid).update({
+        'enderecos': dadosExistentes['enderecos'],
+      });
+    }
+  } else {
+    // Cliente não existe: cria um novo
     await db.collection('clientes').doc(auth.usuario!.uid).set({
       'nome': cliente.nome,
       'cpf': cliente.cpf,
       'telefone': cliente.telefone,
       'imageUrl': cliente.imageUrl,
-      'enderecos': dadosExistentes['enderecos'], //mantem o endereço 
+  
     });
-
-    if (snapshot.exists) {
-      String nomeBD = snapshot.get('nome');
-      String telefoneBD = snapshot.get('telefone');
-      String cpfBD = snapshot.get('cpf');
-      setState(() {
-        nome = nomeBD;
-        telefone = telefoneBD;
-        cpf = cpfBD;
-      });
-    }
   }
+  setState(() {
+    nome = cliente.nome;
+    telefone = cliente.telefone;
+    cpf = cliente.cpf;
+  });
+}
+
 
   Future<void> loadClienteData() async {
     try {
@@ -220,6 +238,10 @@ class _UsuarioState extends State<Usuario> {
                 padding: EdgeInsets.all(10),
                 child: Container(
                   child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter()
+                    ],
                     controller: telefoneController,
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -234,9 +256,13 @@ class _UsuarioState extends State<Usuario> {
                 padding: EdgeInsets.all(10),
                 child: Container(
                   child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CpfInputFormatter(),
+                    ],
                     keyboardType: TextInputType.number,
                     controller: cpfController,
-                    enabled: !cpfController.text.isNotEmpty,
+                    //enabled: !cpfController.text.isNotEmpty,
                     decoration: InputDecoration(
                       labelText: 'CPF',
                       hintText: cpf,
@@ -251,21 +277,35 @@ class _UsuarioState extends State<Usuario> {
                     width: 160,
                     child: OutlinedButton(
                       onPressed: () {
-                        salvarCliente(Cliente(
-                          nomeController.text,
-                          cpfController.text,
-                          telefoneController.text,
-                          imageUrl,
-                        ));
-                         Fluttertoast.showToast(
-                    msg: "Perfil atualizado com sucesso",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Color(0xFF672F67),
-                    textColor: Colors.white,
-                    fontSize: 16.0,
-                  );
+                        if (GetUtils.isCpf(cpfController.text)) {
+                          salvarCliente(Cliente(
+                            nomeController.text,
+                            cpfController.text,
+                            telefoneController.text,
+                            clienteImageUrl,
+                          ));
+                          Fluttertoast.showToast(
+                          msg: "Perfil atualizado com sucesso",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Color(0xFF672F67),
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                        }
+                        else{
+                           Fluttertoast.showToast(
+                          msg: "CPF Inválido",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Color(0xFF672F67),
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                        }
+                        
                       },
                       child: Text(
                         'Salvar',

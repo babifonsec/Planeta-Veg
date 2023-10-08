@@ -18,7 +18,7 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
   FirebaseFirestore db = DBFirestore.get();
   // ProdutoController produto = ProdutoController();
   final key = GlobalKey<FormState>();
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _observacaoController  = TextEditingController();
   int maxCharacters = 140;
   int quantidade = 1;
 
@@ -40,11 +40,11 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    _observacaoController .dispose();
     super.dispose();
   }
 
-  Future<void> adicionarProduto(int qtde, String uidProduto) async {
+  Future<void> adicionarProduto(int qtde, String uidProduto, String observacao) async {
     try {
       DocumentSnapshot produtoSnapshot =
           await db.collection('produtos').doc(uidProduto).get();
@@ -62,6 +62,7 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
           'qtde': qtde,
           'produto': produtoData,
           'valorTotal': valorTotalProduto,
+          'observacao':observacao,
         };
 
         DocumentReference docRef = db.collection('carrinho').doc(user!.uid);
@@ -88,7 +89,8 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
         } else {
           // Se o documento não existir, cria um novo
           await docRef.set({
-            'produtos': [novoProdutoNoCarrinho]
+            'produtos': [novoProdutoNoCarrinho],
+
           });
         }
       } else {
@@ -168,7 +170,7 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
                         primary: Color(0xFF672F67),
                       ),
                       onPressed: () {
-                        adicionarProduto(quantidade, produtoUid);
+                        adicionarProduto(quantidade, produtoUid,_observacaoController.text);
 
                         Fluttertoast.showToast(
                           msg: "Produto adicionado ao carrinho",
@@ -279,7 +281,7 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Container(
-                        width: 110,
+                        width: 130,
                         height: 35,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -376,7 +378,7 @@ class _ProdutoDetalhesState extends State<ProdutoDetalhes> {
                         padding: const EdgeInsets.only(
                             left: 10, right: 10, bottom: 10),
                         child: TextFormField(
-                          controller: _textEditingController,
+                          controller: _observacaoController ,
                           maxLength: maxCharacters,
                           maxLines: null,
                           decoration: InputDecoration(
