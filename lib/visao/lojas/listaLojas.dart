@@ -11,10 +11,36 @@ class ListaLojas extends StatefulWidget {
 
 class _ListaLojasState extends State<ListaLojas> {
   FirebaseFirestore db = DBFirestore.get();
+  bool orderByAscending = true;
+  List<DocumentSnapshot> lojasDocs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAndSortData();
+  }
+
+  void fetchAndSortData() async {
+    var snapshot = await db.collection('lojas').get();
+    lojasDocs = snapshot.docs;
+
+    sortData();
+  }
+
+  void sortData() {
+    setState(() {
+      if (orderByAscending) {
+        lojasDocs.sort((a, b) => (a.data() as Map<String, dynamic>)['nome']
+            .compareTo((b.data() as Map<String, dynamic>)['nome']));
+      } else {
+        lojasDocs.sort((a, b) => (b.data() as Map<String, dynamic>)['nome']
+            .compareTo((a.data() as Map<String, dynamic>)['nome']));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    bool orderByAscending = true;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -32,11 +58,11 @@ class _ListaLojasState extends State<ListaLojas> {
                 ),
               ),
             ),
-           
             IconButton(
               onPressed: () {
                 setState(() {
-                  orderByAscending = false; // Ordenar de A-Z
+                  orderByAscending = !orderByAscending;
+                  sortData();
                 });
               },
               icon: Icon(Icons.sort_by_alpha_outlined),
@@ -63,68 +89,37 @@ class _ListaLojasState extends State<ListaLojas> {
                   child: Text('Nenhuma loja encontrada.'),
                 );
               }
-              // Converte os documentos em uma lista para ordenação
-              List<DocumentSnapshot> lojasDocs = snapshot.data!.docs.toList();
-
-              // Ordena a lista de acordo com a preferência
-              if (orderByAscending) {
-                lojasDocs.sort((a, b) =>
-                    (a.data() as Map<String, dynamic>)['nome']
-                        .compareTo((b.data() as Map<String, dynamic>)['nome']));
-              } else {
-                lojasDocs.sort((a, b) =>
-                    (b.data() as Map<String, dynamic>)['nome']
-                        .compareTo((a.data() as Map<String, dynamic>)['nome']));
-              }
 
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: snapshot.data!.docs.length,
+                itemCount: lojasDocs.length,
                 itemBuilder: (context, index) {
-                  final DocumentSnapshot lojasDoc = snapshot.data!.docs[index];
+                  final DocumentSnapshot lojasDoc = lojasDocs[index];
                   final lojasData = lojasDoc.data() as Map<String, dynamic>;
 
                   return Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                      bottom: 2,
-                      top: 5,
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      child: ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Container(
-                          width: 50,
-                          height: 50,
-                          child: ClipOval(
-                            child: Image.network(
-                              lojasData['imagem'],
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          lojasData['nome'] ?? '',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        onTap: () {
-                          final lojaUid = lojasDoc.id;
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  LojasDetalhes(lojaUid: lojaUid),
-                            ),
-                          );
-                        },
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        bottom: 2,
+                        top: 5,
                       ),
-                    ),
-                  );
+                      child: Container(
+                          width: double.infinity,
+                          child: ListTile(
+                            title: Text(lojasData['nome']),
+                            contentPadding: EdgeInsets.zero,
+                            leading: Container(
+                              width: 50,
+                              height: 50,
+                              child: ClipOval(
+                                child: Image.network(
+                                  lojasData['imagem'],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          )));
                 },
               );
             })

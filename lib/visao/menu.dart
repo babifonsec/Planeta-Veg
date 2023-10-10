@@ -9,6 +9,7 @@ import 'package:planetaveg/visao/usuario/perfilUsuario.dart';
 import 'package:planetaveg/visao/home.dart';
 import 'package:planetaveg/servico/auth_service.dart';
 import 'package:planetaveg/visao/pesquisa.dart';
+import 'package:planetaveg/visao/mapa.dart';
 import 'package:provider/provider.dart';
 
 //indice de seleção da tela
@@ -32,6 +33,7 @@ String getNomeFromSnapshot(DocumentSnapshot? snapshot) {
 List<Widget> _stOptions = <Widget>[
   Home(),
   Pesquisa(),
+  Mapa(),
 ];
 
 //lista de icons
@@ -40,10 +42,15 @@ final List<BottomNavigationBarItem> _navegationItens = [
     icon: Icon(Icons.home),
     label: 'Início',
   ),
-  BottomNavigationBarItem(
+   BottomNavigationBarItem(
     icon: Icon(Icons.search),
     label: 'Buscar',
   ),
+  BottomNavigationBarItem(
+    icon: Icon(Icons.map_outlined),
+    label: 'Maps',
+  ),
+ 
 ];
 
 class Menu extends StatefulWidget {
@@ -81,36 +88,7 @@ class _MenuState extends State<Menu> {
 
   Widget build(BuildContext context) {
     final nome = getNomeFromSnapshot(snapshot);
-    if (_selectedIndex == 1) {
-      return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          //centralizar o campo de pesquisa
-          flexibleSpace: Container(
-            width: double.infinity,
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: 300,
-              padding: EdgeInsets.symmetric(vertical: 5),
-              child: buscar(),
-            ),
-          ),
-          backgroundColor: Color(0xFF672F67),
-        ),
-        //corpo da aplicação, aqui são setadas as telas
-        body: _stOptions.elementAt(_selectedIndex),
-        //botões do BN
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Color(0xFF672F67),
-          items: _navegationItens,
-          unselectedItemColor: Color(0xFFF5F5F5),
-          currentIndex: _selectedIndex,
-          selectedItemColor: Color(0xFF7A8727),
-          onTap:
-              _onItemTapped, //chama o métdodo onItemTapped ao clicar no botao do BTNNavigation
-        ),
-      );
-    } else {
+
       return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
@@ -244,14 +222,6 @@ class _MenuState extends State<Menu> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.settings,
-                  color: Color(0xFF7A8727),
-                ),
-                title: Text('Configurações'),
-                onTap: () {},
-              ),
-              ListTile(
-                leading: Icon(
                   Icons.logout,
                   color: Color(0xFF7A8727),
                 ),
@@ -274,7 +244,7 @@ class _MenuState extends State<Menu> {
               _onItemTapped, //chama o métdodo onItemTapped ao clicar no botao do BTNNavigation
         ),
       );
-    }
+    
   }
 
   @override
@@ -283,37 +253,4 @@ class _MenuState extends State<Menu> {
       _selectedIndex = index;
     });
   }
-}
-
-//retorna a barra de pesquisas no app bar
-Widget buscar() {
-  return Container(
-    padding: EdgeInsets.only(left: 10),
-    decoration: BoxDecoration(
-        color: Color.fromRGBO(216, 216, 216, 0.698),
-        borderRadius: BorderRadius.circular(60)),
-    child: Row(
-      children: <Widget>[
-        Icon(
-          Icons.search,
-          color: Colors.white,
-        ),
-        Container(
-          height: 45,
-          width: 250,
-          child: TextField(
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: 'Buscar... ',
-              labelStyle: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF7A8727),
-              ),
-              border: InputBorder.none,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
 }

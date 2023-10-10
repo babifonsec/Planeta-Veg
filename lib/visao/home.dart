@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:planetaveg/database/dbHelper.dart';
 import 'package:planetaveg/visao/categoria/categoriaItens.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:planetaveg/visao/lojas/listaLojas.dart';
+import 'package:planetaveg/visao/promocao/promoDetalhes.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key});
@@ -11,10 +14,39 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<String> promoImages = [];
+  List<String> promoIds = [];
+  FirebaseFirestore db = DBFirestore.get();
+
+  Future<void> _fetchPromoImages() async {
+    try {
+      QuerySnapshot promoSnapshot = await db.collection('promocoes').get();
+      List<String> images = [];
+      List<String> ids = [];
+
+      for (QueryDocumentSnapshot doc in promoSnapshot.docs) {
+        String imageUrl = doc['imagem'];
+        String promoId = doc.id;
+        images.add(imageUrl);
+        ids.add(promoId);
+      }
+
+      setState(() {
+        promoImages = images;
+        promoIds = ids;
+      });
+    } catch (e) {
+      print('Erro ao buscar imagens de promoção: $e');
+    }
+  }
+
+  void initState() {
+    super.initState();
+    _fetchPromoImages();
+  }
+
   @override
   Widget build(BuildContext context) {
-   
-
     return SingleChildScrollView(
       child: Center(
         child: Container(
@@ -54,9 +86,45 @@ class _HomeState extends State<Home> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: carousel(),
+                  child: SingleChildScrollView(
+                    child: Center(
+                      child: Container(
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: 170,
+                            enableInfiniteScroll: true,
+                            enlargeCenterPage: true,
+                            autoPlay: true,
+                          ),
+                          items: promoImages.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            String imageUrl = entry.value;
+                            String promoId =
+                                promoIds[index]; // Obtém o ID correspondente
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PromoDetalhes(promoId),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                child: Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              
                 ListaLojas(),
               ],
             ),
@@ -142,29 +210,26 @@ Widget ordenar() {
   );
 }
 
-Widget carousel() {
-  return SingleChildScrollView(
-    child: Container(
-      child: CarouselSlider(
-        options: CarouselOptions(
-          height: 150,
-          enableInfiniteScroll: true,
-          enlargeCenterPage: true,
-          autoPlay: true,
+/** Widget carousel() {
+  return  SingleChildScrollView(
+      child: Container(
+        child: CarouselSlider(
+          options: CarouselOptions(
+            height: 150,
+            enableInfiniteScroll: true,
+            enlargeCenterPage: true,
+            autoPlay: true,
+          ),
+          items: promoImages.map((imageUrl) {
+            return Container(
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
+            );
+          }).toList(),
         ),
-        items: [
-          Container(
-            child: Image.asset(
-              "assets/promo-sushi.png",
-            ),
-          ),
-          Container(
-            child: Image.asset(
-              "assets/promo-wrap.png",
-            ),
-          ),
-        ],
       ),
-    ),
-  );
+    );
 }
+**/
