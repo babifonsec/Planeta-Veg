@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   List<String> promoIds = [];
   FirebaseFirestore db = DBFirestore.get();
 
-  Future<void> _fetchPromoImages() async {
+  Future<void> _buscaImagemPromo() async {
     try {
       QuerySnapshot promoSnapshot = await db.collection('promocoes').get();
       List<String> images = [];
@@ -42,96 +42,97 @@ class _HomeState extends State<Home> {
 
   void initState() {
     super.initState();
-    _fetchPromoImages();
+    _buscaImagemPromo();
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Center(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "Categorias",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xFF7A8727),
-                      fontWeight: FontWeight.bold,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Text(
+                      "Categorias",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF7A8727),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: Container(
-                    height: 87,
-                    child: categoriaList(),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Text(
-                    "Promoções",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Color(0xFF7A8727),
-                      fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      height: 87,
+                      child: categoriaList(),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: SingleChildScrollView(
-                    child: Center(
-                      child: Container(
-                        child: CarouselSlider(
-                          options: CarouselOptions(
-                            height: 170,
-                            enableInfiniteScroll: true,
-                            enlargeCenterPage: true,
-                            autoPlay: true,
-                          ),
-                          items: promoImages.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            String imageUrl = entry.value;
-                            String promoId =
-                                promoIds[index]; // Obtém o ID correspondente
-
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PromoDetalhes(promoId),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: Text(
+                      "Promoções",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Color(0xFF7A8727),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: SingleChildScrollView(
+                      child: Center(
+                        child: Container(
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                              height: 170,
+                              enableInfiniteScroll: true,
+                              enlargeCenterPage: true,
+                              autoPlay: true,
+                            ),
+                            items: promoImages.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              String imageUrl = entry.value;
+                              String promoId =
+                                  promoIds[index]; // Obtém o ID correspondente
+    
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PromoDetalhes(promoId),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
                                   ),
-                                );
-                              },
-                              child: Container(
-                                child: Image.network(
-                                  imageUrl,
-                                  fit: BoxFit.cover,
                                 ),
-                              ),
-                            );
-                          }).toList(),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                ListaLojas(),
-              ],
-            ),
+                  Expanded(child: ListaLojas()),
+                ],
+              ),
+            
           ),
         ),
-      ),
     );
+    
   }
 }
 
@@ -180,56 +181,3 @@ Widget categoriaList() {
   );
 }
 
-Widget ordenar() {
-  return Container(
-    padding: EdgeInsets.only(left: 10),
-    decoration: BoxDecoration(
-        color: Color.fromRGBO(216, 216, 216, 0.698),
-        borderRadius: BorderRadius.circular(60)),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Icon(Icons.search),
-        Container(
-          height: 45,
-          width: 250,
-          child: TextField(
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              labelText: 'Ordenar ',
-              labelStyle: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF7A8727),
-              ),
-              border: InputBorder.none,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-/** Widget carousel() {
-  return  SingleChildScrollView(
-      child: Container(
-        child: CarouselSlider(
-          options: CarouselOptions(
-            height: 150,
-            enableInfiniteScroll: true,
-            enlargeCenterPage: true,
-            autoPlay: true,
-          ),
-          items: promoImages.map((imageUrl) {
-            return Container(
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-              ),
-            );
-          }).toList(),
-        ),
-      ),
-    );
-}
-**/

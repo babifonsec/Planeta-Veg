@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+//classe para tratar exceções ao entrar/registrar no app
 class AuthException implements Exception{
   String message;
   AuthException({required this.message});
 }
 
+
+//autenticacao
 class AuthService extends ChangeNotifier{
   FirebaseAuth _auth = FirebaseAuth.instance;
   User? usuario;
@@ -14,7 +17,8 @@ class AuthService extends ChangeNotifier{
   AuthService(){
     _authCheck();
   }
-
+  
+  //usa authStateChanges() para ouvir as alterações no estado de autenticação do Firebase
 _authCheck(){
   _auth.authStateChanges().listen((User? user) {
   usuario = (user==null) ? null : user;

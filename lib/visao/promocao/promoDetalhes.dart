@@ -37,6 +37,8 @@ _PromoDetalhesState(this.promoId);
     }
   }
 
+
+//atualiza a tela depois de aumentar ou diminuir a qtde
   @override
   void dispose() {
     _observacaoController .dispose();
@@ -52,11 +54,11 @@ _PromoDetalhesState(this.promoId);
         Map<String, dynamic> produtoData =
             promocoesnapshot.data() as Map<String, dynamic>;
 
-        // Calcule o valor total do produto
+        // Calcula o valor total do produto
         double precoProduto = double.parse(produtoData['preco'] ?? '0.0');
         double valorTotalProduto = precoProduto * qtde;
 
-        // Crie o novo item do carrinho com base nos dados do produto e no valor total
+        // Cria o novo item do carrinho com base nos dados do produto e no valor total
         Map<String, dynamic> novoProdutoNoCarrinho = {
           'qtde': qtde,
           'produto': produtoData,
@@ -66,29 +68,29 @@ _PromoDetalhesState(this.promoId);
 
         DocumentReference docRef = db.collection('carrinho').doc(user!.uid);
 
-        // Primeiro, obtenha os dados atuais do documento
+        //obtem os dados atuais do documento
         DocumentSnapshot docSnapshot = await docRef.get();
         if (docSnapshot.exists) {
           Map<String, dynamic> data =
               docSnapshot.data() as Map<String, dynamic>;
 
-          // Verifica se o campo 'promocoes' existe no documento
-          if (data.containsKey('promocoes')) {
-            List<dynamic> promocoes = data['promocoes'];
-            // Adiciona o novo produto ao array de promocoes
-            promocoes.add(novoProdutoNoCarrinho);
-            // Atualiza o documento com o novo array de promocoes
-            await docRef.update({'promocoes': promocoes});
+          // Verifica se o campo 'produtos' existe no documento
+          if (data.containsKey('produtos')) {
+            List<dynamic> produtos = data['produtos'];
+            // Adiciona o novo produto ao array de produtos
+            produtos.add(novoProdutoNoCarrinho);
+            // Atualiza o documento com o novo array de produtos
+            await docRef.update({'produtos': produtos});
           } else {
-            // Se o campo 'promocoes' não existir, cria o novo produto
+            // Se o campo 'produtos' não existir, cria um novo 
             await docRef.set({
-              'promocoes': [novoProdutoNoCarrinho]
+              'produtos': [novoProdutoNoCarrinho]
             }, SetOptions(merge: true));
           }
         } else {
           // Se o documento não existir, cria um novo
           await docRef.set({
-            'promocoes': [novoProdutoNoCarrinho],
+            'produtos': [novoProdutoNoCarrinho],
 
           });
         }

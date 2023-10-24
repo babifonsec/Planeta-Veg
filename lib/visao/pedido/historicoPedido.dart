@@ -68,7 +68,7 @@ class _HistoricoState extends State<Historico> {
           ),
         );
                 },
-                // Adicione mais informações do pedido, como data, status, etc., aqui
+              
               );
             },
           );

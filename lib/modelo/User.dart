@@ -1,10 +1,9 @@
 class User {
   int? id;
   String? email;
-  bool? isAdmin;
 
 
-  User({this.id, this.email, this.isAdmin});
+  User({this.id, this.email});
 
 
   factory User.fromJson(Map<String, dynamic> json) {

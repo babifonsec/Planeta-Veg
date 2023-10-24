@@ -43,7 +43,6 @@ class _EnderecosCreateState extends State<EnderecosCreate> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cadastre seu endereço', style: TextStyle(color: Colors.white),),
-
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: Color(0xFF672F67),
       ),

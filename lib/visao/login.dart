@@ -181,19 +181,7 @@ class _LoginState extends State<Login> {
                             },
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: isLogin
-                              ? Text(
-                                  'Esqueceu sua senha?',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: Color.fromARGB(255, 58, 58, 58),
-                                  ),
-                                )
-                              : Text(''),
-                        ),
+                        
                         const SizedBox(
                           height: 30,
                         ),

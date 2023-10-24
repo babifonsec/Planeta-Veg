@@ -15,8 +15,8 @@ import 'package:provider/provider.dart';
 //indice de seleção da tela
 int _selectedIndex = 0;
 String imageUrl = '';
-late final FirebaseAuth _auth;
-late final User? user;
+late  FirebaseAuth _auth;
+late  User? user;
 FirebaseFirestore db = DBFirestore.get();
 DocumentSnapshot? snapshot;
 
@@ -71,7 +71,7 @@ class _MenuState extends State<Menu> {
   @override
   void initState() {
     _selectedIndex = _opcao;
-
+//init state carrega a foto do cliente
     _auth = FirebaseAuth.instance;
     user = _auth.currentUser;
     db.collection('clientes').doc(user?.uid).get().then(

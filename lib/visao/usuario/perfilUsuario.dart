@@ -40,12 +40,14 @@ class _UsuarioState extends State<Usuario> {
   String telefone = "Número de telefone";
   String cpf = "CPF";
 
+//pega imagem da galeria do dispositivo
   Future<XFile?> getImage() async {
     final ImagePicker _picker = ImagePicker();
     XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     return image;
   }
 
+//faz upload da img no firestore
   Future<UploadTask> upload(String path) async {
     File file = File(path);
     try {
@@ -55,7 +57,7 @@ class _UsuarioState extends State<Usuario> {
       throw Exception('Erro no upload: ${e.code}');
     }
   }
-
+//chama o getImage e o upload e armazena a url na variavel
   pickAndUpload() async {
     XFile? file = await getImage();
     if (file != null) {
@@ -115,7 +117,7 @@ class _UsuarioState extends State<Usuario> {
   });
 }
 
-
+//carregar os dados do cliente
   Future<void> loadClienteData() async {
     try {
       User? currentUser = auth.usuario;

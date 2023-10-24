@@ -108,6 +108,7 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              //BOTAO EDIÇÃO
                               IconButton(
                                 icon: Icon(Icons.edit, color: Colors.grey),
                                 onPressed: () {
@@ -119,6 +120,7 @@ class _EnderecosIndexState extends State<EnderecosIndex> {
                                   );
                                 },
                               ),
+                              //BOTÃO DE DELEÇÃO
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.grey),
                                 onPressed: () {

@@ -30,7 +30,8 @@ class _MapaState extends State<Mapa> {
                 ),
                 onMapCreated: controller.onMapCreated,
                 myLocationEnabled: true,
-              )),
+                markers: controller.markers,
+              ),),
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:planetaveg/database/dbHelper.dart';
 
 class PosicaoControle extends GetxController {
   final latitude = 0.0.obs;
@@ -14,28 +16,51 @@ class PosicaoControle extends GetxController {
 
   static PosicaoControle get to => Get.find<PosicaoControle>();
 
-get mapsController => _mapsController;
-get position => _position;
+  get mapsController => _mapsController;
+  get position => _position;
 
-onMapCreated(GoogleMapController gmc) async{
-  _mapsController = gmc;
-  getPosicao();
- 
+  onMapCreated(GoogleMapController gmc) async {
+    _mapsController = gmc;
+    getPosicao();
+    loadLojas();
+  }
+
+ loadLojas() async {
+    FirebaseFirestore db = DBFirestore.get();
+    final lojas = await db.collection('marcadores').get();
+    for (var loja in lojas.docs) {
+        addMarker(loja);
+    }
 }
 
 
-watchPosition() async{
-posicaoStream = Geolocator.getPositionStream().listen((Position position){
+addMarker(QueryDocumentSnapshot loja) async {
+  Map<String, dynamic> data = loja.data() as Map<String, dynamic>; // Convertendo os dados para Map<String, dynamic>
+  GeoPoint point = data['position']['geopoint'];
 
-if(position != null){
-   latitude.value = position.latitude;
-      longitude.value = position.longitude;
+  markers.add(
+    Marker(
+      markerId: MarkerId(loja.id),
+      position: LatLng(point.latitude, point.longitude),
+      icon: await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(size: Size(5, 5)), 'assets/marker.png'),
+      infoWindow: InfoWindow(title: data['nome'], onTap: () => {}),
+    ),
+  );
+  update();
 }
-});
+
+  watchPosition() async {
+    posicaoStream = Geolocator.getPositionStream().listen((Position position) {
+      if (position != null) {
+        latitude.value = position.latitude;
+        longitude.value = position.longitude;
+      }
+    });
   }
 
   @override
-  void onClose(){
+  void onClose() {
     posicaoStream.cancel();
     super.onClose();
   }
@@ -66,13 +91,11 @@ if(position != null){
 
   getPosicao() async {
     try {
-      final posicao =  await _posicaoAtual();
+      final posicao = await _posicaoAtual();
       latitude.value = posicao.latitude;
       longitude.value = posicao.longitude;
       _mapsController.animateCamera(
-        CameraUpdate.newLatLng(LatLng(latitude.value, longitude.value))
-      );
-
+          CameraUpdate.newLatLng(LatLng(latitude.value, longitude.value)));
     } catch (e) {
       Get.snackbar("Erro", e.toString(),
           backgroundColor: Colors.grey[900],

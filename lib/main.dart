@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:planetaveg/controle/CarrinhoController.dart';
 import 'package:planetaveg/controle/EnderecoController.dart';
-import 'package:planetaveg/servico/auth_check.dart';
+import 'package:planetaveg/visao/splash.dart';
 import 'package:planetaveg/servico/auth_service.dart';
 import 'package:planetaveg/visao/usuario/perfilUsuario.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +12,11 @@ void main() async {
   await Firebase.initializeApp();
 
   runApp(
+    //provider responsável por fornecer um objeto que pode ser compartilhado em toda 
+    //a árvore de widgets do aplicativo 
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthService()),
+       ChangeNotifierProvider(create: (context) => AuthService()),
         ChangeNotifierProvider<CarrinhoController>(
           create: (context) => CarrinhoController(),
         ),
@@ -31,7 +33,6 @@ void main() async {
     ),
   );
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: AuthCheck(),
+      home: Splash(),
     );
   }
 }

@@ -14,7 +14,8 @@ class _PesquisaState extends State<Pesquisa> {
   TextEditingController _pesquisaController = TextEditingController();
   List<QueryDocumentSnapshot> resultado = [];
 
-void _performSearch() async {
+//pesqusia:
+void _pesquisa() async {
   String searchTerm = _pesquisaController.text.trim();
   if (searchTerm.isNotEmpty) {
     try {
@@ -71,7 +72,8 @@ void _performSearch() async {
                     controller: _pesquisaController,
                     keyboardType: TextInputType.text,
                     onSubmitted: (_) {
-                      _performSearch();
+                      //faz a pesquisa
+                      _pesquisa();
                     },
                     decoration: InputDecoration(
                       labelText: 'Buscar produtos... ',
@@ -93,6 +95,7 @@ void _performSearch() async {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
+                  //botao mostra detalhes do produto
                   Navigator.push(
                     context,
                     MaterialPageRoute(
