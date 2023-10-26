@@ -1,6 +1,8 @@
 # planetaveg
 
-A new Flutter project.
+Este é um protótipo de um app de delivery vegetariano (versão cliente) em flutter/firebase.
+A versão administrativa/loja pode ser encontrada aqui: https://github.com/babifonsec/PlanetaVeg-Admin.git
+
 
 ## Getting Started
 
